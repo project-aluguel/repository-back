@@ -116,6 +116,7 @@ public class UsuarioController {
 
 
         usuarioModel.setIsLogado(false);
+        usuarioModel.setAutenticado(false);
         // caso seja necessário alterar todos.
         //usuarioModel.setComplemento(usuarioDto.getComplemento());
         usuarioService.save(usuarioModel);
