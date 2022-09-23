@@ -14,40 +14,50 @@ public class EmailModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @Column(length = 16)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID emailId;
-    private String ReferenciaProprietario;
-    private String emailFrom;
-    private String emailTo;
-    private String subject;
+
+    private String referenciaProprietario;
+    private String emailDe;
+    private String emailPara;
+    private String titulo;
     // column definition text consegue receber no banco string maior que 255.
     @Column(columnDefinition = "TEXT")
     private String text;
     private LocalDateTime enviarDataEmail;
     private StatusEmail statusEmail;
 
-    public String getEmailFrom() {
-        return emailFrom;
+    public String getEmailDe() {
+        return emailDe;
     }
 
-    public void setEmailFrom(String emailFrom) {
-        this.emailFrom = emailFrom;
+    public String getReferenciaProprietario() {
+        return referenciaProprietario;
     }
 
-    public String getEmailTo() {
-        return emailTo;
+    public void setReferenciaProprietario(String referenciaProprietario) {
+        this.referenciaProprietario = referenciaProprietario;
     }
 
-    public void setEmailTo(String emailTo) {
-        this.emailTo = emailTo;
+    public void setEmailDe(String emailDe) {
+        this.emailDe = emailDe;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getEmailPara() {
+        return emailPara;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setEmailPara(String emailPara) {
+        this.emailPara = emailPara;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setSubject(String titulo) {
+        this.titulo = titulo;
     }
 
     public String getText() {

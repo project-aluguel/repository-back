@@ -25,11 +25,12 @@ public class EmailService {
         emailModel.setEnviarDataEmail(LocalDateTime.now());
         try{
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(emailModel.getEmailFrom());
-            message.setTo(emailModel.getEmailTo());
-            message.setSubject(emailModel.getSubject());
+            message.setFrom(emailModel.getEmailDe());
+            message.setTo(emailModel.getEmailPara());
+            message.setSubject(emailModel.getTitulo());
             message.setText(emailModel.getText());
             emailSender.send(message);
+
             emailModel.setStatusEmail(StatusEmail.SENT);
         } catch (MailException e){
             emailModel.setStatusEmail(StatusEmail.ERROR);

@@ -38,7 +38,7 @@ public class EmailDto {
     }
 
     public void setReferenciaProprietario(String referenciaProprietario) {
-        referenciaProprietario = referenciaProprietario;
+        this.referenciaProprietario = referenciaProprietario;
     }
 
     public String getEmailDe() {
