@@ -1,0 +1,14 @@
+com\renthouse\renthouse\controllers\UsuarioController.class
+com\renthouse\renthouse\RenthouseApplication.class
+com\renthouse\renthouse\repositories\UsuarioRepository.class
+com\renthouse\renthouse\controllers\EmailController.class
+com\renthouse\renthouse\models\UsuarioModel.class
+com\renthouse\renthouse\dtos\EmailDto.class
+com\renthouse\renthouse\models\EmailModel.class
+com\renthouse\renthouse\dtos\LoginDto.class
+com\renthouse\renthouse\enums\StatusEmail.class
+com\renthouse\renthouse\mensageiro\RabbitMQConfig.class
+com\renthouse\renthouse\repositories\EmailRepository.class
+com\renthouse\renthouse\services\EmailService.class
+com\renthouse\renthouse\services\UsuarioService.class
+com\renthouse\renthouse\dtos\UsuarioDto.class
