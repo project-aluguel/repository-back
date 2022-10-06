@@ -1,8 +1,11 @@
 package com.renthouse.renthouse.dtos;
 
-import javax.validation.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
 
-public class ProdutosDto {
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+
+public class ItemDto {
 
     @NotBlank
     private String nome;
@@ -10,13 +13,20 @@ public class ProdutosDto {
     @NotBlank
     private String manualUso;
 
-    @NotBlank
+
+
     private Double valorGarantia;
 
-    @NotBlank
+
     private Double valorItem;
 
     private Boolean alugado;
+
+//    @NotBlank
+//    private LocalDateTime dataCriacao;
+
+//    @NotBlank
+//    private LocalDateTime dataAtualizacao;
 
     public String getNome() {
         return nome;
@@ -57,4 +67,20 @@ public class ProdutosDto {
     public void setAlugado(Boolean alugado) {
         this.alugado = alugado;
     }
+
+//    public LocalDateTime getDataCriacao() {
+//        return dataCriacao;
+//    }
+//
+//    public void setDataCriacao(LocalDateTime dataCriacao) {
+//        this.dataCriacao = dataCriacao;
+//    }
+//
+//    public LocalDateTime getDataAtualizacao() {
+//        return dataAtualizacao;
+//    }
+//
+//    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+//        this.dataAtualizacao = dataAtualizacao;
+//    }
 }
