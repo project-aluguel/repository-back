@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/renthouse/renthouse.iml" filepath="$PROJECT_DIR$/renthouse/renthouse.iml" />
+=======
+>>>>>>> origin/listaObj
       <module fileurl="file://$PROJECT_DIR$/.idea/repository-back.iml" filepath="$PROJECT_DIR$/.idea/repository-back.iml" />
     </modules>
   </component>
