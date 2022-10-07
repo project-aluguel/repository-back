@@ -9,7 +9,7 @@ import java.util.UUID;
 @Entity
 // nome da tabela que ira ser gerada no banco
 // serializable são converções que ocorrem por baixo dos panos da jvm
-@Table(name = "usuario")
+@Table(name = "tb_usuarios")
 public class UsuarioModel implements Serializable {
     private static final long serialVersionUID = 1L;
 

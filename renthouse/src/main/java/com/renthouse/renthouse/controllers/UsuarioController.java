@@ -32,15 +32,15 @@ public class UsuarioController {
     // sem ele o spring ignora as anotações em dto.
 
 
-    @PostMapping("/criar-usuario")
-    public ResponseEntity<Object> criarUsuario(@RequestBody @Valid UsuarioDto usuarioDto){
+    @PostMapping("/cadastro")
+    public ResponseEntity<Object> criarUsuario(@RequestBody UsuarioDto usuarioDto) {
 
-        if(usuarioService.existsByEmail(usuarioDto.getEmail())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: conta com email já criado!");
+        if (usuarioService.existsByEmail(usuarioDto.getEmail())) {
+            return ResponseEntity.status(409).body("Conflito: conta com email já criado!");
         }
 
-        if(usuarioService.existsByCpf(usuarioDto.getCpf())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito: conta com esse cpf já criada!");
+        if (usuarioService.existsByCpf(usuarioDto.getCpf())) {
+            return ResponseEntity.status(409).body("Conflito: conta com esse cpf já criada!");
         }
 
         UsuarioModel usuarioModel = new UsuarioModel();
@@ -48,27 +48,27 @@ public class UsuarioController {
         BeanUtils.copyProperties(usuarioDto, usuarioModel);
         // setando data que n foi definida pelo dto (id n pq é gerado automaticamente)
         usuarioModel.setDataCriacaoConta(LocalDateTime.now(ZoneId.of("UTC")));
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuarioModel));
+        return ResponseEntity.status(201).body(usuarioService.save(usuarioModel));
     }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioModel>> getAllUsuarios(){
+    public ResponseEntity<List<UsuarioModel>> getAllUsuarios() {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getAllUsuario(@PathVariable(value = "id") UUID id){
+    public ResponseEntity<Object> getAllUsuario(@PathVariable(value = "id") UUID id) {
         Optional<UsuarioModel> usuarioModelOptional = usuarioService.findById(id);
-        if(!usuarioModelOptional.isPresent()){
+        if (!usuarioModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("usuario não encontrado!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(usuarioModelOptional.get());
     }
 
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Object> deleteUsuario(@PathVariable(value = "id") UUID id){
+    public ResponseEntity<Object> deleteUsuario(@PathVariable(value = "id") UUID id) {
         Optional<UsuarioModel> usuarioModelOptional = usuarioService.findById(id);
-        if(!usuarioModelOptional.isPresent()){
+        if (!usuarioModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario não encontrado!");
         }
         usuarioService.delete(usuarioModelOptional.get());
@@ -77,9 +77,9 @@ public class UsuarioController {
 
     @PatchMapping("/autenticar/{id}")
     public ResponseEntity<Object> patchAutenticarUsuario(@PathVariable(value = "id") UUID id,
-                                                              @RequestBody @Valid LoginDto loginDto){
+                                                         @RequestBody @Valid LoginDto loginDto) {
         Optional<UsuarioModel> usuarioModelOptional = usuarioService.findById(id);
-        if(!usuarioModelOptional.isPresent()) {
+        if (!usuarioModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario não encontrado");
         }
         var usuarioModel = usuarioModelOptional.get();
@@ -90,22 +90,23 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.save(usuarioModel));
     }
 
-    @GetMapping("/login")
-    public String efetuarLogin( @RequestBody LoginDto loginDto) {
+    @PostMapping("/login")
+    public ResponseEntity<LoginDto> efetuarLogin(@RequestBody LoginDto credenciaisUser) {
         for (UsuarioModel usuarioModel : usuarioService.findAll()) {
-            if(usuarioModel.getEmail().equals(loginDto.getEmail()) && usuarioModel.getSenha().equals(loginDto.getSenha())){
-                BeanUtils.copyProperties(loginDto, usuarioModel);
+            if (usuarioModel.getEmail().equals(credenciaisUser.getEmail())
+                    && usuarioModel.getSenha().equals(credenciaisUser.getSenha())) {
+                BeanUtils.copyProperties(credenciaisUser, usuarioModel);
                 usuarioModel.setIsLogado(true);
-                return "Login efetuado com sucesso";
+                return ResponseEntity.status(200).body(credenciaisUser);
             }
         }
-        return "Email ou senha inválidos";
+        return ResponseEntity.status(400).build();
     }
 
     @PatchMapping("/logoff/{id}")
-    public ResponseEntity<Object> efetuarLogoff(@PathVariable(value = "id") UUID id){
+    public ResponseEntity<Object> efetuarLogoff(@PathVariable(value = "id") UUID id) {
         Optional<UsuarioModel> usuarioModelOptional = usuarioService.findById(id);
-        if(!usuarioModelOptional.isPresent()) {
+        if (!usuarioModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario não encontrado");
         }
 
@@ -122,7 +123,6 @@ public class UsuarioController {
         usuarioService.save(usuarioModel);
         return ResponseEntity.status(HttpStatus.OK).body(usuarioModel.getNomeCompleto() + ", Logoff feito com sucesso!");
     }
-
 
 
 }
