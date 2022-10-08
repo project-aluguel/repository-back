@@ -25,27 +25,26 @@ public class UsuarioModel implements Serializable {
     @Column(nullable = false, unique = true, length = 45)
     private String email;
 
-    @Column(nullable = false, unique = false, length = 45)
+    @Column(nullable = false, length = 45)
     private String senha;
 
-    @Column(nullable = false, unique = false, length = 45)
+    @Column(nullable = false, length = 45)
     private String nomeCompleto;
 
-    @Column(nullable = false, unique = false, length = 10)
+    @Column(nullable = false, length = 10)
     private LocalDate dataNascimento;
 
-    @Column(nullable = false, unique = true, length = 11)
+    @Column(nullable = false, length = 11)
     private String cpf;
 
-    @Column(nullable = false, unique = false, length = 11)
+    @Column(nullable = false, length = 11)
     private String telefone;
 
-    @Column(nullable = false, unique = false, length = 70)
+    @Column(nullable = false, length = 70)
     private LocalDateTime criadoEm;
 
-    @Column(nullable = true, unique = false, length = 70)
+    @Column(nullable = true, length = 70)
     private LocalDateTime atualizadoEm;
-
 
     public UUID getId() {
         return id;

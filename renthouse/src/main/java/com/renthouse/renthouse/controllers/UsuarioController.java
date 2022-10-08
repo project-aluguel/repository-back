@@ -5,7 +5,9 @@ package com.renthouse.renthouse.controllers;
 
 import com.renthouse.renthouse.dtos.LoginDto;
 import com.renthouse.renthouse.dtos.UsuarioDto;
+import com.renthouse.renthouse.models.EnderecoModel;
 import com.renthouse.renthouse.models.UsuarioModel;
+import com.renthouse.renthouse.services.EnderecoService;
 import com.renthouse.renthouse.services.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +29,13 @@ public class UsuarioController {
 
     @Autowired
     UsuarioService usuarioService;
+    @Autowired
+    private EnderecoService enderecoService;
+    EnderecoController enderecoController = new EnderecoController();
+
 
     // @valid é o responsavel por fazer a leitura das anotações de dto, como de notblank por exemplo
     // sem ele o spring ignora as anotações em dto.
-
 
     @PostMapping("/cadastro")
     public ResponseEntity<Object> criarUsuario(@RequestBody UsuarioDto usuarioDto) {
@@ -43,12 +48,17 @@ public class UsuarioController {
             return ResponseEntity.status(409).body("Conflito: este cpf já está sendo usado!");
         }
 
+        EnderecoModel enderecoModel = new EnderecoModel();
+        BeanUtils.copyProperties(usuarioDto.getEndereco(), enderecoModel);
+        enderecoModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")));
+        enderecoService.save(enderecoModel);
+
         UsuarioModel usuarioModel = new UsuarioModel();
-        // faz a conversão de dto para model
         BeanUtils.copyProperties(usuarioDto, usuarioModel);
-        // setando data que n foi definida pelo dto (id n pq é gerado automaticamente)
         usuarioModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")));
-        return ResponseEntity.status(201).body(usuarioService.save(usuarioModel));
+        usuarioService.save(usuarioModel);
+
+        return ResponseEntity.status(201).body(usuarioDto);
     }
 
     @GetMapping
@@ -119,6 +129,5 @@ public class UsuarioController {
         usuarioService.save(usuarioModel);
         return ResponseEntity.status(HttpStatus.OK).body(usuarioModel.getNomeCompleto() + ", Logoff feito com sucesso!");
     }
-
 
 }

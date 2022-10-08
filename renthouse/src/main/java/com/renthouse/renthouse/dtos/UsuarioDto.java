@@ -5,24 +5,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
-// Recebe dados do usuario
-// faz a validações iniciais como se o campo pode ser enviado em branco.
-// dados de entrada (input/post)
-// não deixar o que o usuário não deve utilizar (id,dataRegistro,etc)
-// para criar essas validações necessário a dependencia start validation.
-// caso vc não coloque notblank (campo não pode ser em branco)...
-// ...E coloque em model em @column que nullable = false, pode dar erro de dados se o usuário digitar em branco.
-
-// json teste abaixo:
-//{
-//    "email" : "diego.lsilva@bandtec.com.br",
-//     "senha" : "arrozfeijao123",
-//        "nomeCompleto" : "Diego silva",
-//        "cpf" : "040.860.070-53",
-//        "telefone" : "11967197958",
-//        "endereco" : "Rua dos portos largos - jardim peri - são paulo 1105",
-//        "complemento" : "casa 13 (ultima casa da viela)"
-//        }
 public class UsuarioDto {
 
     @NotBlank
@@ -31,7 +13,6 @@ public class UsuarioDto {
     private String senha;
     @NotBlank
     private String nomeCompleto;
-
     @NotBlank
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
@@ -39,6 +20,8 @@ public class UsuarioDto {
     private String cpf;
     @NotBlank
     private String telefone;
+    @NotBlank
+    private EnderecoDto endereco;
 
     public String getEmail() {
         return email;
@@ -88,4 +71,11 @@ public class UsuarioDto {
         this.telefone = telefone;
     }
 
+    public EnderecoDto getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(EnderecoDto endereco) {
+        this.endereco = endereco;
+    }
 }
