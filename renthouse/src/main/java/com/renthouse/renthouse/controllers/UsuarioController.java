@@ -36,18 +36,18 @@ public class UsuarioController {
     public ResponseEntity<Object> criarUsuario(@RequestBody UsuarioDto usuarioDto) {
 
         if (usuarioService.existsByEmail(usuarioDto.getEmail())) {
-            return ResponseEntity.status(409).body("Conflito: conta com email já criado!");
+            return ResponseEntity.status(409).body("Conflito: este email já está sendo usado!");
         }
 
         if (usuarioService.existsByCpf(usuarioDto.getCpf())) {
-            return ResponseEntity.status(409).body("Conflito: conta com esse cpf já criada!");
+            return ResponseEntity.status(409).body("Conflito: este cpf já está sendo usado!");
         }
 
         UsuarioModel usuarioModel = new UsuarioModel();
         // faz a conversão de dto para model
         BeanUtils.copyProperties(usuarioDto, usuarioModel);
         // setando data que n foi definida pelo dto (id n pq é gerado automaticamente)
-        usuarioModel.setDataCriacaoConta(LocalDateTime.now(ZoneId.of("UTC")));
+        usuarioModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")));
         return ResponseEntity.status(201).body(usuarioService.save(usuarioModel));
     }
 
@@ -96,7 +96,7 @@ public class UsuarioController {
             if (usuarioModel.getEmail().equals(credenciaisUser.getEmail())
                     && usuarioModel.getSenha().equals(credenciaisUser.getSenha())) {
                 BeanUtils.copyProperties(credenciaisUser, usuarioModel);
-                usuarioModel.setIsLogado(true);
+                usuarioModel.setAutenticado(true);
                 return ResponseEntity.status(200).body(credenciaisUser);
             }
         }
@@ -111,12 +111,8 @@ public class UsuarioController {
         }
 
         var usuarioModel = usuarioModelOptional.get();
-//        if (!usuarioModel.ngetLogado()){
-//            return ResponseEntity.status(HttpStatus.OK).body(usuarioModel.getNomeCompleto() + " não esta logado");
-//        }
 
-
-        usuarioModel.setIsLogado(false);
+        usuarioModel.setAutenticado(false);
         usuarioModel.setAutenticado(false);
         // caso seja necessário alterar todos.
         //usuarioModel.setComplemento(usuarioDto.getComplemento());

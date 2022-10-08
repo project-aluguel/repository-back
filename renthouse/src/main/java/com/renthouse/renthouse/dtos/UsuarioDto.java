@@ -1,6 +1,9 @@
 package com.renthouse.renthouse.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 
 // Recebe dados do usuario
 // faz a validações iniciais como se o campo pode ser enviado em branco.
@@ -28,14 +31,14 @@ public class UsuarioDto {
     private String senha;
     @NotBlank
     private String nomeCompleto;
+
+    @NotBlank
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate dataNascimento;
     @NotBlank
     private String cpf;
     @NotBlank
     private String telefone;
-    @NotBlank
-    private String endereco;
-    @NotBlank
-    private String complemento;
 
     public String getEmail() {
         return email;
@@ -61,6 +64,14 @@ public class UsuarioDto {
         this.nomeCompleto = nomeCompleto;
     }
 
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
     public String getCpf() {
         return cpf;
     }
@@ -77,19 +88,4 @@ public class UsuarioDto {
         this.telefone = telefone;
     }
 
-    public String getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
-    }
-
-    public String getComplemento() {
-        return complemento;
-    }
-
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
-    }
 }

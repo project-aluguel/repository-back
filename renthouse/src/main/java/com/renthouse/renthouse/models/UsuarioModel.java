@@ -2,6 +2,7 @@ package com.renthouse.renthouse.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -21,9 +22,6 @@ public class UsuarioModel implements Serializable {
     @Column(nullable = false)
     private Boolean autenticado = false;
 
-    @Column(nullable = false)
-    private boolean isLogado = false;
-
     @Column(nullable = false, unique = true, length = 45)
     private String email;
 
@@ -33,20 +31,21 @@ public class UsuarioModel implements Serializable {
     @Column(nullable = false, unique = false, length = 45)
     private String nomeCompleto;
 
+    @Column(nullable = false, unique = false, length = 10)
+    private LocalDate dataNascimento;
+
     @Column(nullable = false, unique = true, length = 11)
     private String cpf;
 
     @Column(nullable = false, unique = false, length = 11)
     private String telefone;
 
-    @Column(nullable = false, unique = false, length = 100)
-    private String endereco;
-
     @Column(nullable = false, unique = false, length = 70)
-    private String complemento;
+    private LocalDateTime criadoEm;
 
-    @Column(nullable = false, unique = false, length = 70)
-    private LocalDateTime dataCriacaoConta;
+    @Column(nullable = true, unique = false, length = 70)
+    private LocalDateTime atualizadoEm;
+
 
     public UUID getId() {
         return id;
@@ -80,6 +79,14 @@ public class UsuarioModel implements Serializable {
         this.nomeCompleto = nomeCompleto;
     }
 
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
     public String getCpf() {
         return cpf;
     }
@@ -96,28 +103,20 @@ public class UsuarioModel implements Serializable {
         this.telefone = telefone;
     }
 
-    public String getEndereco() {
-        return endereco;
+    public LocalDateTime getCriadoEm() {
+        return criadoEm;
     }
 
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
+    public void setCriadoEm(LocalDateTime criadoEm) {
+        this.criadoEm = criadoEm;
     }
 
-    public String getComplemento() {
-        return complemento;
+    public LocalDateTime getAtualizadoEm() {
+        return atualizadoEm;
     }
 
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
-    }
-
-    public LocalDateTime getDataCriacaoConta() {
-        return dataCriacaoConta;
-    }
-
-    public void setDataCriacaoConta(LocalDateTime dataCriacaoConta) {
-        this.dataCriacaoConta = dataCriacaoConta;
+    public void setAtualizadoEm(LocalDateTime atualizadoEm) {
+        this.atualizadoEm = atualizadoEm;
     }
 
     public Boolean getAutenticado() {
@@ -128,8 +127,4 @@ public class UsuarioModel implements Serializable {
         this.autenticado = autenticado;
     }
 
-    public void setIsLogado(Boolean logado) {this.isLogado = logado;}
-    public boolean ngetLogado() {
-        return isLogado;
-    }
 }
