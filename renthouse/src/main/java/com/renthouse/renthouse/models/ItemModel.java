@@ -32,7 +32,7 @@ public class ItemModel implements Serializable {
     @Column(nullable = false)
     private LocalDateTime dataCriacao;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime dataAtualizacao;
 
     public UUID getId() {
@@ -90,5 +90,18 @@ public class ItemModel implements Serializable {
 
     public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
         this.dataAtualizacao = dataAtualizacao;
+    }
+
+    @Override
+    public String toString() {
+        return "ItemModel{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", manualUso='" + manualUso + '\'' +
+                ", valorGarantia=" + valorGarantia +
+                ", valorItem=" + valorItem +
+                ", dataCriacao=" + dataCriacao +
+                ", dataAtualizacao=" + dataAtualizacao +
+                '}';
     }
 }

@@ -1,6 +1,7 @@
 package com.renthouse.renthouse.controllers;
 
 import com.renthouse.renthouse.dtos.ItemDto;
+import com.renthouse.renthouse.dtos.ListaObjDto;
 import com.renthouse.renthouse.models.ItemModel;
 import com.renthouse.renthouse.models.UsuarioModel;
 import com.renthouse.renthouse.services.ItemService;
@@ -17,23 +18,56 @@ import java.time.ZoneId;
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/itens")
-public class ItemController <T> {
+public class ItemController {
 
     @Autowired
     private ItemService itemService;
 
-    private int nroElem;
+    private ListaObjDto<ItemDto> itensVetor = new ListaObjDto<>(10);
 
     @PostMapping
-    public ResponseEntity<ItemModel> adiciona(
+    public ResponseEntity<ItemDto> criarItem(
             @RequestBody @Valid ItemDto itemDto) {
         ItemModel itemModel = new ItemModel();
-        // faz a conversão de dto para model
         BeanUtils.copyProperties(itemDto, itemModel);
         itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")));
-        itemModel.setDataAtualizacao(LocalDateTime.now(ZoneId.of("UTC")));
-        return ResponseEntity.status(HttpStatus.CREATED).body(itemService.save(itemModel));
+        itensVetor.adiciona(itemDto);
+        itemService.save(itemModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(itensVetor.getElemento(itensVetor.getTamanho()-1));
     }
+
+    @GetMapping
+    public ResponseEntity buscarItens(){
+        if (itensVetor.getTamanho() == 0) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(itensVetor.exibe());
+    }
+
+    @DeleteMapping("/{indice}")
+    public ResponseEntity removerPorIndice(@PathVariable int indice) {
+        if (itensVetor.removePeloIndice(indice)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Indice invalido");
+    }
+
+    @DeleteMapping
+    public ResponseEntity removerElemento(
+            @RequestBody @Valid ItemDto itemDto) {
+        if (itensVetor.removeElemento(itemDto)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Indice invalido");
+    }
+
+
+
+
+
+
+
+
 
 
 

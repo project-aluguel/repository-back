@@ -14,6 +14,4 @@ import java.util.UUID;
 @Repository
 public interface ItemRepository extends JpaRepository<ItemModel, UUID> {
 
-//    public void adiciona(ItemDto elemento);
-
 }
