@@ -2,7 +2,7 @@ package com.renthouse.renthouse.dtos;
 
 import com.renthouse.renthouse.models.ItemModel;
 
-public class ListaObjDto <T> {
+public class ListaObjDto<T> {
 
     // 01) Declarar vetor de int:
     // É inicializado no construtor
@@ -28,8 +28,7 @@ public class ListaObjDto <T> {
     public void adiciona(T elemento) {
         if (nroElem >= vetor.length) {
             throw new IllegalStateException();
-        }
-        else {
+        } else {
             vetor[nroElem++] = elemento;
         }
     }
@@ -58,8 +57,8 @@ public class ListaObjDto <T> {
 
         // Loop para "deslocar para a esquerda" os elementos do vetor
         // sobrescrevendo o elemento removido
-        for (int i = indice; i < nroElem-1; i++) {
-            vetor[i] = vetor[i+1];
+        for (int i = indice; i < nroElem - 1; i++) {
+            vetor[i] = vetor[i + 1];
         }
 
         nroElem--;
@@ -87,8 +86,7 @@ public class ListaObjDto <T> {
     public T getElemento(int indice) {
         if (indice < 0 || indice >= nroElem) {
             return null;
-        }
-        else {
+        } else {
             return vetor[indice];
         }
     }
@@ -100,19 +98,6 @@ public class ListaObjDto <T> {
             vetor[i] = null;
         }
         nroElem = 0;
-    }
-
-    public void ordenaArray(ItemModel[] array) {
-        for (int i = 0; i < array.length - 1; i++) {
-            for (int j = 1; j < array.length - i; j++) {
-                ItemModel var1 = array[j - 1];
-                ItemModel var2 = array[j];
-                if (var1.getValorItem() > var2.getValorItem()) {
-                    array[j] = var1;
-                    array[j - 1] = var2;
-                }
-            }
-        }
     }
 
     // 11) Método exibe:
@@ -128,6 +113,19 @@ public class ListaObjDto <T> {
         }
         return vetorNovo;
 
+    }
+
+    public void ordenaArray(ItemModel[] array) {
+        for (int i = 0; i < array.length - 1; i++) {
+            for (int j = 1; j < array.length - i; j++) {
+                ItemModel var1 = array[j - 1];
+                ItemModel var2 = array[j];
+                if (var1.getValorItem() > var2.getValorItem()) {
+                    array[j] = var1;
+                    array[j - 1] = var2;
+                }
+            }
+        }
     }
 
     // Get do vetor
