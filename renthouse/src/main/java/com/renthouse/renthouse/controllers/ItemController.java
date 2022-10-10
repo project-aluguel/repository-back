@@ -61,6 +61,22 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.OK).body("Indice invalido");
     }
 
+    @GetMapping("/{indice}")
+    public ResponseEntity<ItemDto> buscarElemento(@PathVariable int indice) {
+        if (itensVetor.getTamanho() == 0) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(itensVetor.getElemento(indice));
+    }
+
+    @GetMapping("/ordena")
+    public ResponseEntity ordenaItensPorPreco(){
+        ItemModel[] itens = itemService.findAll().toArray(new ItemModel[0]);
+        itensVetor.ordenaArray(itens);
+        return ResponseEntity.status(200).body(itens);
+    }
+
+
 
 
 

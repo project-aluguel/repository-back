@@ -1,5 +1,7 @@
 package com.renthouse.renthouse.dtos;
 
+import com.renthouse.renthouse.models.ItemModel;
+
 public class ListaObjDto <T> {
 
     // 01) Declarar vetor de int:
@@ -94,22 +96,38 @@ public class ListaObjDto <T> {
     // 10) Método limpa
     // Limpa a lista
     public void limpa() {
+        for (int i = 0; i < nroElem; i++) {
+            vetor[i] = null;
+        }
         nroElem = 0;
+    }
+
+    public void ordenaArray(ItemModel[] array) {
+        for (int i = 0; i < array.length - 1; i++) {
+            for (int j = 1; j < array.length - i; j++) {
+                ItemModel var1 = array[j - 1];
+                ItemModel var2 = array[j];
+                if (var1.getValorItem() > var2.getValorItem()) {
+                    array[j] = var1;
+                    array[j - 1] = var2;
+                }
+            }
+        }
     }
 
     // 11) Método exibe:
     // Exibe os elementos da lista
-    public T[] exibe() {
+    public Object[] exibe() {
         if (nroElem == 0) {
             return null;
         }
-        else {
-            T[] vetorNovo = (T[]) new Object[getTamanho()];
-            for (int i = 0; i < nroElem; i++) {
-                vetorNovo[i] = vetor[i];
-            }
-            return vetorNovo;
+
+        T[] vetorNovo = (T[]) new Object[getTamanho()];
+        for (int i = 0; i < nroElem; i++) {
+            vetorNovo[i] = vetor[i];
         }
+        return vetorNovo;
+
     }
 
     // Get do vetor
