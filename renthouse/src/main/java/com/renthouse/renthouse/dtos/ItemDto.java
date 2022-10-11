@@ -3,30 +3,23 @@ package com.renthouse.renthouse.dtos;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Formatter;
+import java.util.FormatterClosedException;
 
 public class ItemDto {
 
-    @NotBlank
     private String nome;
 
-    @NotBlank
     private String manualUso;
 
-
-
     private Double valorGarantia;
-
 
     private Double valorItem;
 
     private Boolean alugado;
-
-//    @NotBlank
-//    private LocalDateTime dataCriacao;
-
-//    @NotBlank
-//    private LocalDateTime dataAtualizacao;
 
     public String getNome() {
         return nome;
@@ -68,19 +61,52 @@ public class ItemDto {
         this.alugado = alugado;
     }
 
-//    public LocalDateTime getDataCriacao() {
-//        return dataCriacao;
-//    }
-//
-//    public void setDataCriacao(LocalDateTime dataCriacao) {
-//        this.dataCriacao = dataCriacao;
-//    }
-//
-//    public LocalDateTime getDataAtualizacao() {
-//        return dataAtualizacao;
-//    }
-//
-//    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
-//        this.dataAtualizacao = dataAtualizacao;
-//    }
+    public static void gravaArquivoCsv(ListaObjDto<ItemDto> lista, String nomeArquivo) {
+        FileWriter arq = null; // objeto que representa o arquivo de gravacao
+        Formatter saida = null; // objeto usado para gravar o arquivo
+        Boolean deuRuim = false;
+        nomeArquivo += ".csv"; // acrescenta a extensao ao arquivo
+
+        // bloco para abrir o arquivo
+        try {
+            arq = new FileWriter(nomeArquivo);
+            saida = new Formatter(arq);
+        } catch (IOException erro) {
+            System.out.println("Erro ao abrir o arquivo");
+            System.exit(1);
+            deuRuim = true;
+        }
+
+        // bloco para gravar o arquivo
+
+        try {
+//            saida.format("ID;NOME;VALOR;QUANTIDADE");
+            for (int i = 0; i < lista.getTamanho(); i++) {
+                ItemDto item = lista.getElemento(i);
+                saida.format(
+                        "%s;%s;%.2f;%.2f;%b\n",
+                        item.getNome(),
+                        item.getManualUso(),
+                        item.getValorItem(),
+                        item.getValorGarantia(),
+                        item.getAlugado()
+                );
+            }
+        } catch (FormatterClosedException erro) {
+            System.out.println("Erro ao gravar o arquivo");
+            System.exit(1);
+            deuRuim = true;
+        } finally {
+            saida.close();
+            try {
+                arq.close();
+            } catch (IOException erro) {
+                System.out.println("Erro ao fechar o arquivo");
+                deuRuim = true;
+            }
+            if (deuRuim) {
+                System.exit(1);
+            }
+        }
+    }
 }

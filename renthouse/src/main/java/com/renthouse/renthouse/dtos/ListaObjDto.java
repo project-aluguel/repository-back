@@ -128,6 +128,11 @@ public class ListaObjDto<T> {
         }
     }
 
+    public void atualiza(int indice, T itemAtualizado) {
+        vetor[indice] = itemAtualizado;
+    }
+
+
     // Get do vetor
     // Não retirar, é usado nos testes
     public T[] getVetor() {

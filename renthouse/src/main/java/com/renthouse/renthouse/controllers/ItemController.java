@@ -6,12 +6,20 @@ import com.renthouse.renthouse.models.ItemModel;
 import com.renthouse.renthouse.services.ItemService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Formatter;
+import java.util.FormatterClosedException;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -34,7 +42,7 @@ public class ItemController {
         itemService.save(itemModel);
         itensVetor.adiciona(itemModel);
 
-        return ResponseEntity.status(201).body(itensVetor.getElemento(itensVetor.getTamanho() - 1));
+        return ResponseEntity.status(201).body(itemDto);
     }
 
     @GetMapping
@@ -78,6 +86,79 @@ public class ItemController {
         itensVetor.ordenaArray(itens);
 
         return ResponseEntity.status(200).body(itens);
+    }
+
+    @GetMapping("/csv")
+    public ResponseEntity gerarArquivoCsv() {
+        FileWriter arq = null; // objeto que representa o arquivo de gravacao
+        Formatter saida = null; // objeto usado para gravar o arquivo
+        Boolean deuRuim = false;
+
+        try {
+            arq = new FileWriter("produtos");
+            saida = new Formatter(arq);
+        } catch (IOException erro) {
+            System.exit(1);
+            deuRuim = true;
+            return ResponseEntity.status(500).body("Erro ao abrir o arquivo");
+        }
+
+        try {
+//            saida.format("ID;NOME;VALOR;QUANTIDADE");
+            for (int i = 0; i < itensVetor.getTamanho(); i++) {
+                ItemDto item = new ItemDto();
+                BeanUtils.copyProperties(itensVetor.getElemento(i), item);
+                saida.format(
+                        "%s;%s;%.2f;%.2f;%b\n",
+                        item.getNome(),
+                        item.getManualUso(),
+                        item.getValorItem(),
+                        item.getValorGarantia(),
+                        item.getAlugado()
+                );
+            }
+        } catch (FormatterClosedException erro) {
+            System.exit(1);
+            deuRuim = true;
+            return ResponseEntity.status(500).body("Erro ao gravar o arquivo");
+        } finally {
+            saida.close();
+            try {
+                arq.close();
+            } catch (IOException erro) {
+                deuRuim = true;
+                return ResponseEntity.status(500).body("Erro ao fechar o arquivo");
+            }
+            if (deuRuim) {
+                System.exit(1);
+            }
+        }
+        return ResponseEntity.status(200).build();
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity atualizaItem(@PathVariable UUID id, @RequestBody ItemModel itemAtualizado) {
+
+        Optional<ItemModel> itemBuscado = itemService.findById(id);
+
+        if (itemBuscado.isEmpty()) {
+            return ResponseEntity.status(400).body("ID inexistente na base de dados");
+        }
+
+        ItemModel item = new ItemModel();
+        BeanUtils.copyProperties(itemBuscado.get(), item);
+
+        System.out.println(item);
+
+        if (itensVetor.busca(item) == -1) {
+            return ResponseEntity.status(400).body("Item inexistente no vetor");
+        }
+
+        int indice = itensVetor.busca(item);
+        itemAtualizado.setDataAtualizacao(LocalDateTime.now(ZoneId.of("UTC")));
+        itensVetor.atualiza(indice, itemAtualizado);
+
+        return ResponseEntity.status(200).body(itemAtualizado);
     }
 
 
