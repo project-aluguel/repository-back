@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.Optional;
@@ -38,11 +39,11 @@ public class ItemController {
         }
         ItemModel itemModel = new ItemModel();
         BeanUtils.copyProperties(itemDto, itemModel);
-        itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")));
+        itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
         itemService.save(itemModel);
         itensVetor.adiciona(itemModel);
 
-        return ResponseEntity.status(201).body(itemDto);
+        return ResponseEntity.status(201).body(itemModel);
     }
 
     @GetMapping
@@ -149,6 +150,7 @@ public class ItemController {
         BeanUtils.copyProperties(itemBuscado.get(), item);
 
         System.out.println(item);
+        System.out.println(itensVetor.busca(item));
 
         if (itensVetor.busca(item) == -1) {
             return ResponseEntity.status(400).body("Item inexistente no vetor");
