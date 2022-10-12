@@ -1,6 +1,5 @@
 package com.renthouse.renthouse.services;
 
-import com.renthouse.renthouse.dtos.LoginDto;
 import com.renthouse.renthouse.models.UsuarioModel;
 import com.renthouse.renthouse.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
