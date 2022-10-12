@@ -1,11 +1,7 @@
 package com.renthouse.renthouse.dtos;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.validation.constraints.NotBlank;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
 

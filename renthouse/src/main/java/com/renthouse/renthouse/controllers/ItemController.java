@@ -6,8 +6,6 @@ import com.renthouse.renthouse.models.ItemModel;
 import com.renthouse.renthouse.services.ItemService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -138,7 +136,7 @@ public class ItemController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity atualizaItem(@PathVariable UUID id, @RequestBody ItemModel itemAtualizado) {
+    public ResponseEntity atualizaItem(@PathVariable UUID id, @RequestBody ItemDto itemAtualizado) {
 
         Optional<ItemModel> itemBuscado = itemService.findById(id);
 
@@ -146,19 +144,16 @@ public class ItemController {
             return ResponseEntity.status(400).body("ID inexistente na base de dados");
         }
 
-        ItemModel item = new ItemModel();
-        BeanUtils.copyProperties(itemBuscado.get(), item);
+        int indice = itensVetor.busca(itemBuscado.get());
 
-        System.out.println(item);
-        System.out.println(itensVetor.busca(item));
-
-        if (itensVetor.busca(item) == -1) {
+        if (indice == -1) {
             return ResponseEntity.status(400).body("Item inexistente no vetor");
         }
 
-        int indice = itensVetor.busca(item);
-        itemAtualizado.setDataAtualizacao(LocalDateTime.now(ZoneId.of("UTC")));
-        itensVetor.atualiza(indice, itemAtualizado);
+        ItemModel item = itensVetor.getElemento(indice);
+        BeanUtils.copyProperties(itemAtualizado, item);
+        item.setDataAtualizacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+        itensVetor.atualiza(indice, item);
 
         return ResponseEntity.status(200).body(itemAtualizado);
     }

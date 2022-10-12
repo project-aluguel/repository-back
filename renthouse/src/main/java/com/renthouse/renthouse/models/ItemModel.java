@@ -1,7 +1,8 @@
 package com.renthouse.renthouse.models;
 
+import org.springframework.beans.BeanUtils;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -28,6 +29,9 @@ public class ItemModel implements Serializable {
 
     @Column(nullable = false)
     private Double valorItem;
+
+    @Column(nullable = false)
+    private boolean alugado;
 
     @Column(nullable = false)
     private LocalDateTime dataCriacao;
@@ -75,10 +79,17 @@ public class ItemModel implements Serializable {
         this.valorItem = valorItem;
     }
 
+    public boolean isAlugado() {
+        return alugado;
+    }
+
+    public void setAlugado(boolean alugado) {
+        this.alugado = alugado;
+    }
+
     public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
-
 
     public void setDataCriacao(LocalDateTime dataCriacao) {
         this.dataCriacao = dataCriacao;
@@ -100,8 +111,32 @@ public class ItemModel implements Serializable {
                 ", manualUso='" + manualUso + '\'' +
                 ", valorGarantia=" + valorGarantia +
                 ", valorItem=" + valorItem +
+                ", alugado=" + alugado +
                 ", dataCriacao=" + dataCriacao +
                 ", dataAtualizacao=" + dataAtualizacao +
                 '}';
+    }
+
+    public boolean comparar(Object objeto1, Object objeto2) {
+
+        ItemModel item1 = new ItemModel();
+        ItemModel item2 = new ItemModel();
+        BeanUtils.copyProperties(objeto1, item1);
+        BeanUtils.copyProperties(objeto2, item2);
+
+        if (item1.getId().equals(item2.getId())) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        //se nao forem objetos da mesma classe sao objetos diferentes
+        if (!(obj instanceof ItemModel)) return false;
+
+        //se nao tiverem o mesmo id, sao diferentes
+        return ((ItemModel) obj).id == this.id;
+
     }
 }
