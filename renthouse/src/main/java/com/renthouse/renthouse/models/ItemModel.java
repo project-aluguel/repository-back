@@ -31,7 +31,7 @@ public class ItemModel implements Serializable {
     private Double valorItem;
 
     @Column(nullable = false)
-    private boolean alugado;
+    private Boolean alugado;
 
     @Column(nullable = false)
     private LocalDateTime dataCriacao;
@@ -79,11 +79,11 @@ public class ItemModel implements Serializable {
         this.valorItem = valorItem;
     }
 
-    public boolean isAlugado() {
+    public Boolean getAlugado() {
         return alugado;
     }
 
-    public void setAlugado(boolean alugado) {
+    public void setAlugado(Boolean alugado) {
         this.alugado = alugado;
     }
 

@@ -32,16 +32,17 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity criarItem(@RequestBody @Valid ItemDto itemDto) {
-        if (itensVetor.getTamanho() > 10) {
+        if (itensVetor.getTamanho() >= 10) {
             return ResponseEntity.status(400).body("O usuário ja atingiu o limite (10 itens) de cadastro permitido");
         }
+        System.out.println(itensVetor.getTamanho());
         ItemModel itemModel = new ItemModel();
         BeanUtils.copyProperties(itemDto, itemModel);
         itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
         itemService.save(itemModel);
         itensVetor.adiciona(itemModel);
 
-        return ResponseEntity.status(201).body(itemModel);
+        return ResponseEntity.status(201).body(itemDto);
     }
 
     @GetMapping
