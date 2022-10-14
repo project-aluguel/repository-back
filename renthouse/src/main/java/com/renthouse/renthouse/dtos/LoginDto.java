@@ -14,12 +14,6 @@ public class LoginDto {
     @NotBlank
     private String senha;
 
-    private boolean isLogado;
-
-    public void setIsLogado(boolean logado) {
-        isLogado = logado;
-    }
-
     public String getEmail() {
         return email;
     }
