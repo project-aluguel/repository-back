@@ -21,6 +21,9 @@ public class ItemModel implements Serializable {
     @Column(nullable = false)
     private String nome;
 
+    @Column(nullable = false)
+    private String descricao;
+
     @Column(nullable = true)
     private String manualUso;
 
@@ -53,6 +56,14 @@ public class ItemModel implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public String getManualUso() {

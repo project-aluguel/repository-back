@@ -9,6 +9,8 @@ public class ItemDto {
 
     private String nome;
 
+    private String descricao;
+
     private String manualUso;
 
     private Double valorGarantia;
@@ -23,6 +25,14 @@ public class ItemDto {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public String getManualUso() {

@@ -28,13 +28,13 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    private ListaObjDto<ItemModel> itensVetor = new ListaObjDto<>(10);
+    private ListaObjDto<ItemModel> itensVetor = new ListaObjDto<>(50);
 
     @PostMapping
     public ResponseEntity criarItem(@RequestBody @Valid ItemDto itemDto) {
         try {
-            if (itensVetor.getTamanho() >= 10) {
-                return ResponseEntity.status(400).body("O usuário ja atingiu o limite (10 itens) de cadastro permitido");
+            if (itensVetor.getTamanho() >= 50) {
+                return ResponseEntity.status(400).body("O usuário ja atingiu o limite (50 itens) de cadastro permitido");
             }
             System.out.println(itensVetor.getTamanho());
             ItemModel itemModel = new ItemModel();
@@ -134,8 +134,9 @@ public class ItemController {
                 ItemDto item = new ItemDto();
                 BeanUtils.copyProperties(itensVetor.getElemento(i), item);
                 saida.format(
-                        "%s;%s;%.2f;%.2f;%b\n",
+                        "%s;%s;%s;%.2f;%.2f;%b\n",
                         item.getNome(),
+                        item.getDescricao(),
                         item.getManualUso(),
                         item.getValorItem(),
                         item.getValorGarantia(),
