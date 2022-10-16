@@ -32,25 +32,33 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity criarItem(@RequestBody @Valid ItemDto itemDto) {
-        if (itensVetor.getTamanho() >= 10) {
-            return ResponseEntity.status(400).body("O usuário ja atingiu o limite (10 itens) de cadastro permitido");
-        }
-        System.out.println(itensVetor.getTamanho());
-        ItemModel itemModel = new ItemModel();
-        BeanUtils.copyProperties(itemDto, itemModel);
-        itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
-        itemService.save(itemModel);
-        itensVetor.adiciona(itemModel);
+        try {
+            if (itensVetor.getTamanho() >= 10) {
+                return ResponseEntity.status(400).body("O usuário ja atingiu o limite (10 itens) de cadastro permitido");
+            }
+            System.out.println(itensVetor.getTamanho());
+            ItemModel itemModel = new ItemModel();
+            BeanUtils.copyProperties(itemDto, itemModel);
+            itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+            itemService.save(itemModel);
+            itensVetor.adiciona(itemModel);
 
-        return ResponseEntity.status(201).body(itemDto);
+            return ResponseEntity.status(201).body(itemDto);
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body(erro);
+        }
     }
 
     @GetMapping
     public ResponseEntity buscarItens() {
-        if (itensVetor.getTamanho() == 0) {
-            return ResponseEntity.status(204).build();
+        try {
+            if (itensVetor.getTamanho() == 0) {
+                return ResponseEntity.status(204).build();
+            }
+            return ResponseEntity.status(200).body(itensVetor.exibe());
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body(erro);
         }
-        return ResponseEntity.status(200).body(itensVetor.exibe());
     }
 
     @DeleteMapping("/{indice}")
@@ -61,11 +69,9 @@ public class ItemController {
             }
 
             return ResponseEntity.status(400).body("Índice inexistente");
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body(erro);
         }
-        catch (Exception erro) {
-            return ResponseEntity.status(500).body("Não foi possivel buscar o produto por conta de um erro desconhecido");
-        }
-
     }
 
     @DeleteMapping
@@ -76,7 +82,7 @@ public class ItemController {
             }
             return ResponseEntity.status(400).body("Elemento inexistente");
         } catch (Exception erro) {
-            return ResponseEntity.status(500).body("Não foi possivel remover o produto por conta de um erro desconhecido");
+            return ResponseEntity.status(500).body(erro);
         }
     }
 
@@ -88,8 +94,8 @@ public class ItemController {
             }
             return ResponseEntity.status(200).body(itensVetor.getElemento(indice));
         } catch (Exception erro) {
-        return ResponseEntity.status(500).body("Não foi possivel remover o produto por conta de um erro desconhecido");
-    }
+            return ResponseEntity.status(500).body(erro);
+        }
     }
 
     @GetMapping("/ordem")
@@ -103,7 +109,7 @@ public class ItemController {
 
             return ResponseEntity.status(200).body(itens);
         } catch (Exception erro) {
-            return ResponseEntity.status(500).body("Não foi possivel ordenar os produtos por conta de um erro desconhecido");
+            return ResponseEntity.status(500).body(erro);
         }
     }
 
@@ -119,7 +125,7 @@ public class ItemController {
         } catch (IOException erro) {
             System.exit(1);
             deuRuim = true;
-            return ResponseEntity.status(500).body("Erro ao abrir o arquivo");
+            return ResponseEntity.status(500).body(erro);
         }
 
         try {
@@ -139,7 +145,7 @@ public class ItemController {
         } catch (FormatterClosedException erro) {
             System.exit(1);
             deuRuim = true;
-            return ResponseEntity.status(500).body("Erro ao gravar o arquivo");
+            return ResponseEntity.status(500).body(erro);
         } finally {
             saida.close();
             try {
@@ -178,7 +184,7 @@ public class ItemController {
             return ResponseEntity.status(200).body(itemAtualizado);
 
         } catch (Exception erro) {
-            return ResponseEntity.status(500).body("Não foi possivel atualizar o produto por conta de um erro desconhecido");
+            return ResponseEntity.status(500).body(erro);
         }
     }
 }
