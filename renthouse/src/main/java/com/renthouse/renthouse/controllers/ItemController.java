@@ -55,37 +55,56 @@ public class ItemController {
 
     @DeleteMapping("/{indice}")
     public ResponseEntity removerPorIndice(@PathVariable int indice) {
-        if (itensVetor.removePeloIndice(indice)) {
-            return ResponseEntity.status(200).build();
+        try {
+            if (itensVetor.removePeloIndice(indice)) {
+                return ResponseEntity.status(200).build();
+            }
+
+            return ResponseEntity.status(400).body("Índice inexistente");
         }
-        return ResponseEntity.status(400).body("Índice inexistente");
+        catch (Exception erro) {
+            return ResponseEntity.status(500).body("Não foi possivel buscar o produto por conta de um erro desconhecido");
+        }
+
     }
 
     @DeleteMapping
     public ResponseEntity removerElemento(@RequestBody @Valid ItemModel itemModel) {
-        if (itensVetor.removeElemento(itemModel)) {
-            return ResponseEntity.status(200).build();
+        try {
+            if (itensVetor.removeElemento(itemModel)) {
+                return ResponseEntity.status(200).build();
+            }
+            return ResponseEntity.status(400).body("Elemento inexistente");
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body("Não foi possivel remover o produto por conta de um erro desconhecido");
         }
-        return ResponseEntity.status(400).body("Elemento inexistente");
     }
 
     @GetMapping("/{indice}")
     public ResponseEntity buscarElemento(@PathVariable int indice) {
-        if (itensVetor.getElemento(indice) == null) {
-            return ResponseEntity.status(400).body("Índice inexistente");
-        }
-        return ResponseEntity.status(200).body(itensVetor.getElemento(indice));
+        try {
+            if (itensVetor.getElemento(indice) == null) {
+                return ResponseEntity.status(400).body("Índice inexistente");
+            }
+            return ResponseEntity.status(200).body(itensVetor.getElemento(indice));
+        } catch (Exception erro) {
+        return ResponseEntity.status(500).body("Não foi possivel remover o produto por conta de um erro desconhecido");
+    }
     }
 
     @GetMapping("/ordem")
     public ResponseEntity ordenaPorPreco() {
-        if (itensVetor.getTamanho() == 0) {
-            return ResponseEntity.status(204).build();
-        }
-        ItemModel[] itens = itemService.findAll().toArray(new ItemModel[0]);
-        itensVetor.ordenaArray(itens);
+        try {
+            if (itensVetor.getTamanho() == 0) {
+                return ResponseEntity.status(204).build();
+            }
+            ItemModel[] itens = itemService.findAll().toArray(new ItemModel[0]);
+            itensVetor.ordenaArray(itens);
 
-        return ResponseEntity.status(200).body(itens);
+            return ResponseEntity.status(200).body(itens);
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body("Não foi possivel ordenar os produtos por conta de um erro desconhecido");
+        }
     }
 
     @GetMapping("/csv")
@@ -138,26 +157,28 @@ public class ItemController {
 
     @PutMapping("{id}")
     public ResponseEntity atualizaItem(@PathVariable UUID id, @RequestBody ItemDto itemAtualizado) {
+        try {
+            Optional<ItemModel> itemBuscado = itemService.findById(id);
 
-        Optional<ItemModel> itemBuscado = itemService.findById(id);
+            if (itemBuscado.isEmpty()) {
+                return ResponseEntity.status(400).body("ID inexistente na base de dados");
+            }
 
-        if (itemBuscado.isEmpty()) {
-            return ResponseEntity.status(400).body("ID inexistente na base de dados");
+            int indice = itensVetor.busca(itemBuscado.get());
+
+            if (indice == -1) {
+                return ResponseEntity.status(400).body("Item inexistente no vetor");
+            }
+
+            ItemModel item = itensVetor.getElemento(indice);
+            BeanUtils.copyProperties(itemAtualizado, item);
+            item.setDataAtualizacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+            itensVetor.atualiza(indice, item);
+
+            return ResponseEntity.status(200).body(itemAtualizado);
+
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body("Não foi possivel atualizar o produto por conta de um erro desconhecido");
         }
-
-        int indice = itensVetor.busca(itemBuscado.get());
-
-        if (indice == -1) {
-            return ResponseEntity.status(400).body("Item inexistente no vetor");
-        }
-
-        ItemModel item = itensVetor.getElemento(indice);
-        BeanUtils.copyProperties(itemAtualizado, item);
-        item.setDataAtualizacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
-        itensVetor.atualiza(indice, item);
-
-        return ResponseEntity.status(200).body(itemAtualizado);
     }
-
-
 }
