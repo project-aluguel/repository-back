@@ -134,8 +134,9 @@ public class ItemController {
                 ItemDto item = new ItemDto();
                 BeanUtils.copyProperties(itensVetor.getElemento(i), item);
                 saida.format(
-                        "%s;%s;%s;%.2f;%.2f;%b\n",
+                        "%s;%s;%s;%s;%.2f;%.2f;%b\n",
                         item.getNome(),
+                        item.getCategoria(),
                         item.getDescricao(),
                         item.getManualUso(),
                         item.getValorItem(),
