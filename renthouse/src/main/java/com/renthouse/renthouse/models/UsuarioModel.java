@@ -1,5 +1,7 @@
 package com.renthouse.renthouse.models;
 
+import org.springframework.beans.BeanUtils;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -124,6 +126,29 @@ public class UsuarioModel implements Serializable {
 
     public void setAutenticado(Boolean autenticado) {
         this.autenticado = autenticado;
+    }
+
+    public boolean comparar(Object objeto1, Object objeto2) {
+
+        UsuarioModel usuario1 = new UsuarioModel();
+        UsuarioModel usuario2 = new UsuarioModel();
+        BeanUtils.copyProperties(objeto1, usuario1);
+        BeanUtils.copyProperties(objeto2, usuario2);
+
+        if (usuario1.getId().equals(usuario2.getId())) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        //se nao forem objetos da mesma classe sao objetos diferentes
+        if (!(obj instanceof UsuarioModel)) return false;
+
+        //se nao tiverem o mesmo id, sao diferentes
+        return ((UsuarioModel) obj).id == this.id;
+
     }
 
 }

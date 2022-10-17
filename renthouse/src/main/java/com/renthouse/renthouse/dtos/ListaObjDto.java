@@ -1,6 +1,7 @@
 package com.renthouse.renthouse.dtos;
 
 import com.renthouse.renthouse.models.ItemModel;
+import com.renthouse.renthouse.models.UsuarioModel;
 
 public class ListaObjDto<T> {
 
@@ -32,6 +33,21 @@ public class ListaObjDto<T> {
             }
         }
         return -1;
+
+    }
+
+    public int buscaUsuario(T elementoBuscado) {
+
+        UsuarioModel comparador = new UsuarioModel();
+
+        for (int i = 0; i < nroElem; i++) {
+
+            if (comparador.comparar(vetor[i], elementoBuscado)) {
+                return i;
+            }
+        }
+        return -1;
+
     }
 
     public boolean removePeloIndice(int indice) {
