@@ -28,64 +28,89 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    private ListaObjDto<ItemModel> itensVetor = new ListaObjDto<>(10);
+    private ListaObjDto<ItemModel> itensVetor = new ListaObjDto<>(50);
 
     @PostMapping
     public ResponseEntity criarItem(@RequestBody @Valid ItemDto itemDto) {
-        if (itensVetor.getTamanho() >= 10) {
-            return ResponseEntity.status(400).body("O usuário ja atingiu o limite (10 itens) de cadastro permitido");
-        }
-        System.out.println(itensVetor.getTamanho());
-        ItemModel itemModel = new ItemModel();
-        BeanUtils.copyProperties(itemDto, itemModel);
-        itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
-        itemService.save(itemModel);
-        itensVetor.adiciona(itemModel);
+        try {
+            if (itensVetor.getTamanho() >= 50) {
+                return ResponseEntity.status(400).body("O usuário ja atingiu o limite (50 itens) de cadastro permitido");
+            }
+            System.out.println(itensVetor.getTamanho());
+            ItemModel itemModel = new ItemModel();
+            BeanUtils.copyProperties(itemDto, itemModel);
+            itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+            itemService.save(itemModel);
+            itensVetor.adiciona(itemModel);
 
-        return ResponseEntity.status(201).body(itemDto);
+            return ResponseEntity.status(201).body(itemDto);
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body(erro);
+        }
     }
 
     @GetMapping
     public ResponseEntity buscarItens() {
-        if (itensVetor.getTamanho() == 0) {
-            return ResponseEntity.status(204).build();
+        try {
+            if (itensVetor.getTamanho() == 0) {
+                return ResponseEntity.status(204).build();
+            }
+            return ResponseEntity.status(200).body(itensVetor.exibe());
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body(erro);
         }
-        return ResponseEntity.status(200).body(itensVetor.exibe());
     }
 
     @DeleteMapping("/{indice}")
     public ResponseEntity removerPorIndice(@PathVariable int indice) {
-        if (itensVetor.removePeloIndice(indice)) {
-            return ResponseEntity.status(200).build();
+        try {
+            if (itensVetor.removePeloIndice(indice)) {
+                return ResponseEntity.status(200).build();
+            }
+
+            return ResponseEntity.status(400).body("Índice inexistente");
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body(erro);
         }
-        return ResponseEntity.status(400).body("Índice inexistente");
     }
 
     @DeleteMapping
     public ResponseEntity removerElemento(@RequestBody @Valid ItemModel itemModel) {
-        if (itensVetor.removeElemento(itemModel)) {
-            return ResponseEntity.status(200).build();
+        try {
+            if (itensVetor.removeElemento(itemModel)) {
+                return ResponseEntity.status(200).build();
+            }
+            return ResponseEntity.status(400).body("Elemento inexistente");
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body(erro);
         }
-        return ResponseEntity.status(400).body("Elemento inexistente");
     }
 
     @GetMapping("/{indice}")
     public ResponseEntity buscarElemento(@PathVariable int indice) {
-        if (itensVetor.getElemento(indice) == null) {
-            return ResponseEntity.status(400).body("Índice inexistente");
+        try {
+            if (itensVetor.getElemento(indice) == null) {
+                return ResponseEntity.status(400).body("Índice inexistente");
+            }
+            return ResponseEntity.status(200).body(itensVetor.getElemento(indice));
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body(erro);
         }
-        return ResponseEntity.status(200).body(itensVetor.getElemento(indice));
     }
 
     @GetMapping("/ordem")
     public ResponseEntity ordenaPorPreco() {
-        if (itensVetor.getTamanho() == 0) {
-            return ResponseEntity.status(204).build();
-        }
-        ItemModel[] itens = itemService.findAll().toArray(new ItemModel[0]);
-        itensVetor.ordenaArray(itens);
+        try {
+            if (itensVetor.getTamanho() == 0) {
+                return ResponseEntity.status(204).build();
+            }
+            ItemModel[] itens = itemService.findAll().toArray(new ItemModel[0]);
+            itensVetor.ordenaArray(itens);
 
-        return ResponseEntity.status(200).body(itens);
+            return ResponseEntity.status(200).body(itens);
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body(erro);
+        }
     }
 
     @GetMapping("/csv")
@@ -100,7 +125,7 @@ public class ItemController {
         } catch (IOException erro) {
             System.exit(1);
             deuRuim = true;
-            return ResponseEntity.status(500).body("Erro ao abrir o arquivo");
+            return ResponseEntity.status(500).body(erro);
         }
 
         try {
@@ -109,8 +134,10 @@ public class ItemController {
                 ItemDto item = new ItemDto();
                 BeanUtils.copyProperties(itensVetor.getElemento(i), item);
                 saida.format(
-                        "%s;%s;%.2f;%.2f;%b\n",
+                        "%s;%s;%s;%s;%.2f;%.2f;%b\n",
                         item.getNome(),
+                        item.getCategoria(),
+                        item.getDescricao(),
                         item.getManualUso(),
                         item.getValorItem(),
                         item.getValorGarantia(),
@@ -120,7 +147,7 @@ public class ItemController {
         } catch (FormatterClosedException erro) {
             System.exit(1);
             deuRuim = true;
-            return ResponseEntity.status(500).body("Erro ao gravar o arquivo");
+            return ResponseEntity.status(500).body(erro);
         } finally {
             saida.close();
             try {
@@ -138,26 +165,28 @@ public class ItemController {
 
     @PutMapping("{id}")
     public ResponseEntity atualizaItem(@PathVariable UUID id, @RequestBody ItemDto itemAtualizado) {
+        try {
+            Optional<ItemModel> itemBuscado = itemService.findById(id);
 
-        Optional<ItemModel> itemBuscado = itemService.findById(id);
+            if (itemBuscado.isEmpty()) {
+                return ResponseEntity.status(400).body("ID inexistente na base de dados");
+            }
 
-        if (itemBuscado.isEmpty()) {
-            return ResponseEntity.status(400).body("ID inexistente na base de dados");
+            int indice = itensVetor.busca(itemBuscado.get());
+
+            if (indice == -1) {
+                return ResponseEntity.status(400).body("Item inexistente no vetor");
+            }
+
+            ItemModel item = itensVetor.getElemento(indice);
+            BeanUtils.copyProperties(itemAtualizado, item);
+            item.setDataAtualizacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+            itensVetor.atualiza(indice, item);
+
+            return ResponseEntity.status(200).body(itemAtualizado);
+
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).body(erro);
         }
-
-        int indice = itensVetor.busca(itemBuscado.get());
-
-        if (indice == -1) {
-            return ResponseEntity.status(400).body("Item inexistente no vetor");
-        }
-
-        ItemModel item = itensVetor.getElemento(indice);
-        BeanUtils.copyProperties(itemAtualizado, item);
-        item.setDataAtualizacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
-        itensVetor.atualiza(indice, item);
-
-        return ResponseEntity.status(200).body(itemAtualizado);
     }
-
-
 }
