@@ -18,31 +18,31 @@ public class ItemModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column
     private String nome;
 
-    @Column(nullable = false)
+    @Column
     private String categoria;
 
-    @Column(nullable = false)
+    @Column
     private String descricao;
 
-    @Column(nullable = true)
+    @Column
     private String manualUso;
 
-    @Column(nullable = false)
+    @Column
     private Double valorGarantia;
 
-    @Column(nullable = false)
+    @Column
     private Double valorItem;
 
-    @Column(nullable = false)
+    @Column
     private Boolean alugado;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime dataCriacao;
 
-    @Column(nullable = true)
+    @Column
     private LocalDateTime dataAtualizacao;
 
     public UUID getId() {
