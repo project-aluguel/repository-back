@@ -4,7 +4,6 @@ package com.renthouse.renthouse.controllers;
 // recebe os dados de dto e retorna para o usuario
 
 import com.renthouse.renthouse.dtos.AtualizaUsuarioDto;
-import com.renthouse.renthouse.dtos.ListaObjDto;
 import com.renthouse.renthouse.dtos.LoginDto;
 import com.renthouse.renthouse.dtos.UsuarioDto;
 import com.renthouse.renthouse.models.EnderecoModel;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,7 +32,6 @@ public class UsuarioController {
     @Autowired
     private EnderecoService enderecoService;
     private EnderecoController enderecoController = new EnderecoController();
-    private ListaObjDto<UsuarioModel> usuariosVetor = new ListaObjDto(100);
 
     @PostMapping
     public ResponseEntity criarUsuario(@RequestBody UsuarioDto usuarioDto) {
@@ -40,11 +39,9 @@ public class UsuarioController {
             if (usuarioService.existsByEmail(usuarioDto.getEmail())) {
                 return ResponseEntity.status(409).body("Conflito: este email já está sendo usado!");
             }
-
             if (usuarioService.existsByCpf(usuarioDto.getCpf())) {
                 return ResponseEntity.status(409).body("Conflito: este cpf já está sendo usado!");
             }
-
             EnderecoModel enderecoModel = new EnderecoModel();
             BeanUtils.copyProperties(usuarioDto.getEndereco(), enderecoModel);
             enderecoModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
@@ -55,8 +52,6 @@ public class UsuarioController {
             usuarioModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
             usuarioService.save(usuarioModel);
 
-            usuariosVetor.adiciona(usuarioModel);
-
             return ResponseEntity.status(201).body(usuarioDto);
         } catch (Exception erro) {
             return ResponseEntity.status(500).body(erro);
@@ -66,10 +61,11 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity getAllUsuarios() {
         try {
-            if (usuariosVetor.getTamanho() == 0) {
+            List<UsuarioModel> usuarios = usuarioService.findAll();
+            if (usuarios.isEmpty()) {
                 return ResponseEntity.status(204).build();
             }
-            return ResponseEntity.status(200).body(usuariosVetor.exibe());
+            return ResponseEntity.status(200).body(usuarios);
         } catch (Exception erro) {
             return ResponseEntity.status(500).body(erro);
         }
@@ -79,11 +75,9 @@ public class UsuarioController {
     public ResponseEntity getAllUsuario(@PathVariable UUID id) {
         try {
             Optional<UsuarioModel> usuarioBuscado = usuarioService.findById(id);
-
             if (!usuarioBuscado.isPresent()) {
                 return ResponseEntity.status(204).build();
             }
-
             return ResponseEntity.status(200).body(usuarioBuscado.get());
         } catch (Exception erro) {
             return ResponseEntity.status(500).body(erro);
@@ -94,13 +88,10 @@ public class UsuarioController {
     public ResponseEntity deleteUsuario(@PathVariable UUID id) {
         try {
             Optional<UsuarioModel> usuarioBuscado = usuarioService.findById(id);
-
             if (!usuarioBuscado.isPresent()) {
                 return ResponseEntity.status(204).build();
             }
-
             usuarioService.delete(usuarioBuscado.get());
-
             return ResponseEntity.status(200).build();
         } catch (Exception erro) {
             return ResponseEntity.status(500).body(erro);
@@ -113,18 +104,10 @@ public class UsuarioController {
             for (UsuarioModel usuarioModel : usuarioService.findAll()) {
                 if (usuarioModel.getEmail().equals(credenciaisUser.getEmail())
                         && usuarioModel.getSenha().equals(credenciaisUser.getSenha())) {
-
-                    UsuarioModel usuario = new UsuarioModel();
-                    BeanUtils.copyProperties(usuarioModel, usuario);
-
-                    int indice = usuariosVetor.buscaUsuario(usuario);
-                    usuario.setAutenticado(true);
-                    usuariosVetor.atualiza(indice, usuario);
-
-                    return ResponseEntity.status(200).body(usuario);
+                    usuarioModel.setAutenticado(true);
+                    return ResponseEntity.status(200).body(usuarioModel);
                 }
             }
-
             return ResponseEntity.status(400).build();
         } catch (Exception erro) {
             return ResponseEntity.status(500).body(erro);
@@ -136,18 +119,10 @@ public class UsuarioController {
         try {
             for (UsuarioModel usuarioModel : usuarioService.findAll()) {
                 if (usuarioModel.getId().equals(id)) {
-
-                    UsuarioModel usuario = new UsuarioModel();
-                    BeanUtils.copyProperties(usuarioModel, usuario);
-
-                    int indice = usuariosVetor.buscaUsuario(usuario);
-                    usuario.setAutenticado(false);
-                    usuariosVetor.atualiza(indice, usuario);
-
+                    usuarioModel.setAutenticado(false);
                     return ResponseEntity.status(200).build();
                 }
             }
-
             return ResponseEntity.status(400).build();
         } catch (Exception erro) {
             return ResponseEntity.status(500).body(erro);
@@ -157,27 +132,11 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public ResponseEntity atualizaUser(@PathVariable UUID id, @RequestBody AtualizaUsuarioDto usuarioAtualizado) {
         try {
-            for (UsuarioModel usuarioModel : usuarioService.findAll()) {
-                if (usuarioModel.getId().equals(id)) {
-
-                    UsuarioModel usuario = new UsuarioModel();
-                    BeanUtils.copyProperties(usuarioModel, usuario);
-
-                    int indice = usuariosVetor.buscaUsuario(usuario);
-
-                    usuario.setNomeCompleto(usuarioAtualizado.getNomeCompleto());
-                    usuario.setEmail(usuarioAtualizado.getEmail());
-                    usuario.setSenha(usuarioAtualizado.getSenha());
-                    usuario.setTelefone(usuarioAtualizado.getTelefone());
-                    usuario.setAtualizadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
-                    usuario.setAutenticado(true);
-
-                    usuariosVetor.atualiza(indice, usuario);
-
-                    return ResponseEntity.status(200).body(usuario);
-                }
+            Optional<UsuarioModel> usuarioModel = usuarioService.findById(id);
+            if (!usuarioModel.isEmpty()) {
+//                código de update (aguardando prof yoshi passar o conteudo)
+                return ResponseEntity.status(200).body(usuarioAtualizado);
             }
-
             return ResponseEntity.status(400).build();
         } catch (Exception erro) {
             return ResponseEntity.status(500).body(erro);

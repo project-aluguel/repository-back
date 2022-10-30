@@ -36,20 +36,6 @@ public class ListaObjDto<T> {
 
     }
 
-    public int buscaUsuario(T elementoBuscado) {
-
-        UsuarioModel comparador = new UsuarioModel();
-
-        for (int i = 0; i < nroElem; i++) {
-
-            if (comparador.comparar(vetor[i], elementoBuscado)) {
-                return i;
-            }
-        }
-        return -1;
-
-    }
-
     public boolean removePeloIndice(int indice) {
         if (indice < 0 || indice >= nroElem) {
             return false;
