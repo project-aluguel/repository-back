@@ -15,4 +15,6 @@ public interface UsuarioRepository extends JpaRepository<UsuarioModel, UUID> {
 
     boolean existsByCpf(String cpf);
 
+    boolean existsById(UUID id);
+
 }

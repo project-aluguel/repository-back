@@ -45,6 +45,9 @@ public class ItemModel implements Serializable {
     @Column
     private LocalDateTime dataAtualizacao;
 
+    @ManyToOne
+    private UsuarioModel usuarioModel;
+
     public UUID getId() {
         return id;
     }
@@ -123,6 +126,14 @@ public class ItemModel implements Serializable {
 
     public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
         this.dataAtualizacao = dataAtualizacao;
+    }
+
+    public UsuarioModel getUsuarioModel() {
+        return usuarioModel;
+    }
+
+    public void setUsuarioModel(UsuarioModel usuarioModel) {
+        this.usuarioModel = usuarioModel;
     }
 
     @Override

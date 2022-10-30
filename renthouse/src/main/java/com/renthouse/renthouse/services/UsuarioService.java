@@ -21,7 +21,6 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    // garante que em adição/deleção em cascata nada seja perdido
     @Transactional
     public UsuarioModel save(UsuarioModel usuarioModel) {
         return usuarioRepository.save(usuarioModel);
@@ -35,14 +34,17 @@ public class UsuarioService {
         return usuarioRepository.existsByCpf(cpf);
     }
 
+    public boolean existsById(UUID id) {
+        return usuarioRepository.existsById(id);
+    }
+
     public Optional<UsuarioModel> findById(UUID id) {
         return usuarioRepository.findById(id);
     }
 
-  
     @Transactional
     public void delete(UsuarioModel usuarioModel) {
-         usuarioRepository.delete(usuarioModel);
+        usuarioRepository.delete(usuarioModel);
     }
 
 

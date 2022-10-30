@@ -4,6 +4,7 @@ import com.renthouse.renthouse.dtos.ItemDto;
 import com.renthouse.renthouse.dtos.ListaObjDto;
 import com.renthouse.renthouse.models.ItemModel;
 import com.renthouse.renthouse.services.ItemService;
+import com.renthouse.renthouse.services.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,17 +29,23 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     private ListaObjDto<ItemModel> itensVetor = new ListaObjDto<>(50);
 
     @PostMapping
-    public ResponseEntity criarItem(@RequestBody @Valid ItemDto itemDto) {
+    public ResponseEntity criarItem(@RequestBody ItemDto itemDto) {
         try {
+            if (!usuarioService.existsById(itemDto.getIdUsuario())) {
+                return ResponseEntity.status(404).body("Usuário não existente na base de dados");
+            }
             if (itensVetor.getTamanho() >= 50) {
                 return ResponseEntity.status(400).body("O usuário ja atingiu o limite (50 itens) de cadastro permitido");
             }
-            System.out.println(itensVetor.getTamanho());
             ItemModel itemModel = new ItemModel();
             BeanUtils.copyProperties(itemDto, itemModel);
+            itemModel.setUsuarioModel(usuarioService.findById(itemDto.getIdUsuario()).get());
             itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
             itemService.save(itemModel);
             itensVetor.adiciona(itemModel);
