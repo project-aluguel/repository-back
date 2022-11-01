@@ -21,7 +21,6 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
-    // garante que em adição/deleção em cascata nada seja perdido
     @Transactional
     public ItemModel save(ItemModel itemModel) {
         return itemRepository.save(itemModel);
@@ -36,56 +35,7 @@ public class ItemService {
         itemRepository.delete(itemModel);
     }
 
-//    public void adiciona(ItemModel elemento, int nroElem, ItemModel[] vetor) {
-//        if (nroElem >= vetor.length) {
-//            throw new IllegalStateException();
-//        }
-//        else {
-//            vetor[nroElem++] = elemento;
-//        }
-//    }
-//
-//    public int busca(ItemModel elemento, int nroElem, ItemModel[] vetor) {
-//        for (int i = 0; i < nroElem; i++) {
-//            if (vetor[i].equals(elemento)) {
-//                return i;
-//            }
-//        }
-//        return -1;
-//    }
-//
-//    public boolean removePeloIndice (int indice, int nroElem, ItemModel[] vetor) {
-//        if (indice < 0 || indice >= nroElem) {
-//            System.out.println("\nÍndice inválido!");
-//            return false;
-//        }
-//
-//        for (int i = indice; i < nroElem-1; i++) {
-//            vetor[i] = vetor[i+1];
-//        }
-//
-//        nroElem--;
-//        return true;
-//    }
-//
-//    public boolean removeElemento(ItemModel elemento, int nroElem, ItemModel[] vetor) {
-//        return removePeloIndice(busca(elemento, nroElem, vetor), nroElem, vetor);
-//    }
-//
-//    public int getTamanho(int nroElem) {
-//        return nroElem;
-//    }
-//
-//    public ItemModel getElemento(int indice, int nroElem, ItemModel[] vetor) {
-//        if (indice < 0 || indice >= nroElem) {
-//            return null;
-//        }
-//        else {
-//            return vetor[indice];
-//        }
-//    }
-//
-
-
-
+    public List<ItemModel> getItensDeUsuario(UUID idUsuario) {
+        return itemRepository.findItemModelByUsuarioModelId(idUsuario);
+    }
 }

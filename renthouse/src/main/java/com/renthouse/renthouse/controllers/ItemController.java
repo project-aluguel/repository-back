@@ -2,6 +2,8 @@ package com.renthouse.renthouse.controllers;
 
 import com.renthouse.renthouse.dtos.ItemDto;
 import com.renthouse.renthouse.dtos.ListaObjDto;
+import com.renthouse.renthouse.excecao.LimiteItensAtingido;
+import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
 import com.renthouse.renthouse.models.ItemModel;
 import com.renthouse.renthouse.services.ItemService;
 import com.renthouse.renthouse.services.UsuarioService;
@@ -9,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.io.FileWriter;
@@ -16,10 +19,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Formatter;
-import java.util.FormatterClosedException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -35,13 +35,13 @@ public class ItemController {
     private ListaObjDto<ItemModel> itensVetor = new ListaObjDto<>(50);
 
     @PostMapping
-    public ResponseEntity criarItem(@RequestBody ItemDto itemDto) {
+    public ResponseEntity<ItemDto> criarItem(@RequestBody ItemDto itemDto) {
         try {
             if (!usuarioService.existsById(itemDto.getIdUsuario())) {
-                return ResponseEntity.status(404).body("Usuário não existente na base de dados");
+                throw new UsuarioNaoExiste();
             }
             if (itensVetor.getTamanho() >= 50) {
-                return ResponseEntity.status(400).body("O usuário ja atingiu o limite (50 itens) de cadastro permitido");
+                throw new LimiteItensAtingido();
             }
             ItemModel itemModel = new ItemModel();
             BeanUtils.copyProperties(itemDto, itemModel);
@@ -52,17 +52,20 @@ public class ItemController {
 
             return ResponseEntity.status(201).body(itemDto);
         } catch (Exception erro) {
-            return ResponseEntity.status(500).body(erro);
+            return ResponseEntity.status(500).build();
         }
     }
 
-    @GetMapping
-    public ResponseEntity buscarItens() {
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity buscarItensUsuario(@PathVariable UUID idUsuario) {
         try {
-            if (itensVetor.getTamanho() == 0) {
+            if (usuarioService.findById(idUsuario).isEmpty()) {
+                throw new UsuarioNaoExiste();
+            }
+            if (itemService.getItensDeUsuario(idUsuario).isEmpty()) {
                 return ResponseEntity.status(204).build();
             }
-            return ResponseEntity.status(200).body(itensVetor.exibe());
+            return ResponseEntity.status(200).body(itemService.getItensDeUsuario(idUsuario));
         } catch (Exception erro) {
             return ResponseEntity.status(500).body(erro);
         }

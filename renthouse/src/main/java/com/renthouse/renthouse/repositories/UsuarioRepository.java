@@ -2,6 +2,7 @@ package com.renthouse.renthouse.repositories;
 
 // deve passar a model (onde fica o mapeamento de todas as colunas)
 // e o identificador da tabela
+
 import com.renthouse.renthouse.models.UsuarioModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
