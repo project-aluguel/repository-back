@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EnderecoService {
@@ -16,5 +18,9 @@ public class EnderecoService {
     @Transactional
     public EnderecoModel save(EnderecoModel enderecoModel) {
         return enderecoRepository.save(enderecoModel);
+    }
+
+    public List<EnderecoModel> findEnderecoByUsuario(UUID idUsuario) {
+        return enderecoRepository.findEnderecoModelByUsuarioModelId(idUsuario);
     }
 }

@@ -1,6 +1,7 @@
 package com.renthouse.renthouse.dtos;
 
 import javax.validation.constraints.NotBlank;
+import java.util.UUID;
 
 public class EnderecoDto {
 
@@ -13,7 +14,6 @@ public class EnderecoDto {
     private String complemento;
     @NotBlank
     private String bairro;
-
     @NotBlank
     private String localidade;
     @NotBlank
@@ -26,53 +26,30 @@ public class EnderecoDto {
     private String ddd;
     @NotBlank
     private String siafi;
+    private UUID idUsuario;
 
     public String getCep() {
         return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
     }
 
     public String getLogradouro() {
         return logradouro;
     }
 
-    public void setLogradouro(String logradouro) {
-        this.logradouro = logradouro;
-    }
-
     public String getNumeroResidencia() {
         return numeroResidencia;
-    }
-
-    public void setNumeroResidencia(String numeroResidencia) {
-        this.numeroResidencia = numeroResidencia;
     }
 
     public String getComplemento() {
         return complemento;
     }
 
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
-    }
-
     public String getLocalidade() {
         return localidade;
     }
 
-    public void setLocalidade(String localidade) {
-        this.localidade = localidade;
-    }
-
     public String getUf() {
         return uf;
-    }
-
-    public void setUf(String uf) {
-        this.uf = uf;
     }
 
     public String getIbge() {
@@ -83,36 +60,23 @@ public class EnderecoDto {
         return bairro;
     }
 
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-
-    public void setIbge(String ibge) {
-        this.ibge = ibge;
-    }
-
     public String getGia() {
         return gia;
-    }
-
-    public void setGia(String gia) {
-        this.gia = gia;
     }
 
     public String getDdd() {
         return ddd;
     }
 
-    public void setDdd(String ddd) {
-        this.ddd = ddd;
-    }
-
     public String getSiafi() {
         return siafi;
     }
 
-    public void setSiafi(String siafi) {
-        this.siafi = siafi;
+    public UUID getIdUsuario() {
+        return idUsuario;
     }
 
+    public void setIdUsuario(UUID idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 }

@@ -6,6 +6,8 @@ package com.renthouse.renthouse.controllers;
 import com.renthouse.renthouse.dtos.AtualizaUsuarioDto;
 import com.renthouse.renthouse.dtos.LoginDto;
 import com.renthouse.renthouse.dtos.UsuarioDto;
+import com.renthouse.renthouse.excecao.ConflitoCpf;
+import com.renthouse.renthouse.excecao.ConflitoEmail;
 import com.renthouse.renthouse.models.EnderecoModel;
 import com.renthouse.renthouse.models.UsuarioModel;
 import com.renthouse.renthouse.services.EnderecoService;
@@ -34,27 +36,22 @@ public class UsuarioController {
     private EnderecoController enderecoController = new EnderecoController();
 
     @PostMapping
-    public ResponseEntity criarUsuario(@RequestBody UsuarioDto usuarioDto) {
+    public ResponseEntity<UUID> criarUsuario(@RequestBody UsuarioDto usuarioDto) {
         try {
             if (usuarioService.existsByEmail(usuarioDto.getEmail())) {
-                return ResponseEntity.status(409).body("Conflito: este email já está sendo usado!");
+                throw new ConflitoEmail();
             }
             if (usuarioService.existsByCpf(usuarioDto.getCpf())) {
-                return ResponseEntity.status(409).body("Conflito: este cpf já está sendo usado!");
+                throw new ConflitoCpf();
             }
-            EnderecoModel enderecoModel = new EnderecoModel();
-            BeanUtils.copyProperties(usuarioDto.getEndereco(), enderecoModel);
-            enderecoModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
-            enderecoService.save(enderecoModel);
-
             UsuarioModel usuarioModel = new UsuarioModel();
             BeanUtils.copyProperties(usuarioDto, usuarioModel);
             usuarioModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
             usuarioService.save(usuarioModel);
-
-            return ResponseEntity.status(201).body(usuarioDto);
+            UUID idUsuario = usuarioService.findByEmail(usuarioDto.getEmail()).getId();
+            return ResponseEntity.status(201).body(idUsuario);
         } catch (Exception erro) {
-            return ResponseEntity.status(500).body(erro);
+            return ResponseEntity.status(500).build();
         }
     }
 

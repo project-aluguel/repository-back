@@ -42,6 +42,9 @@ public class EnderecoModel implements Serializable {
     @Column(nullable = true, length = 70)
     private LocalDateTime atualizadoEm;
 
+    @ManyToOne
+    private UsuarioModel usuarioModel;
+
     public UUID getId() {
         return id;
     }
@@ -152,5 +155,13 @@ public class EnderecoModel implements Serializable {
 
     public void setAtualizadoEm(LocalDateTime atualizadoEm) {
         this.atualizadoEm = atualizadoEm;
+    }
+
+    public UsuarioModel getUsuarioModel() {
+        return usuarioModel;
+    }
+
+    public void setUsuarioModel(UsuarioModel usuarioModel) {
+        this.usuarioModel = usuarioModel;
     }
 }
