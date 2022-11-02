@@ -1,6 +1,7 @@
 package com.renthouse.renthouse.controllers;
 
 import com.renthouse.renthouse.dtos.EnderecoDto;
+import com.renthouse.renthouse.excecao.EnderecoNaoExiste;
 import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
 import com.renthouse.renthouse.models.EnderecoModel;
 import com.renthouse.renthouse.services.EnderecoService;
@@ -42,14 +43,44 @@ public class EnderecoController {
 
     @GetMapping("/{idUsuario}")
     public ResponseEntity<List<EnderecoModel>> buscaEnderecosPorUsuario(@PathVariable UUID idUsuario) {
-        if (usuarioService.findById(idUsuario).isEmpty()) {
-            throw new UsuarioNaoExiste();
+        try {
+            if (usuarioService.findById(idUsuario).isEmpty()) {
+                throw new UsuarioNaoExiste();
+            }
+            List<EnderecoModel> enderecos = enderecoService.findEnderecoByUsuario(idUsuario);
+            if (enderecos.isEmpty()) {
+                return ResponseEntity.status(204).build();
+            }
+            return ResponseEntity.status(200).body(enderecos);
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).build();
         }
-        List<EnderecoModel> enderecos = enderecoService.findEnderecoByUsuario(idUsuario);
-        if (enderecos.isEmpty()) {
-            return ResponseEntity.status(204).build();
+    }
+
+    @GetMapping("/busca/{idEndereco}")
+    public ResponseEntity<EnderecoModel> buscaEnderecoPorId(@PathVariable UUID idEndereco) {
+        try {
+            if (enderecoService.existePorId(idEndereco)) {
+                return ResponseEntity.status(200).body(enderecoService.buscaEnderecoPorId(idEndereco));
+            }
+            throw new EnderecoNaoExiste();
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).build();
         }
-        return ResponseEntity.status(200).body(enderecos);
+    }
+
+    @DeleteMapping("/{idEndereco}")
+    public ResponseEntity<UUID> deletaEndereco(@PathVariable UUID idEndereco) {
+        try {
+            if (enderecoService.existePorId(idEndereco)) {
+                UUID idDeletado = enderecoService.buscaEnderecoPorId(idEndereco).getId();
+                enderecoService.deletaEndereco(idEndereco);
+                return ResponseEntity.status(200).body(idDeletado);
+            }
+            throw new EnderecoNaoExiste();
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).build();
+        }
     }
 
 }

@@ -10,6 +10,12 @@ import java.util.UUID;
 @Repository
 public interface EnderecoRepository extends JpaRepository<EnderecoModel, UUID> {
 
-    public List<EnderecoModel> findEnderecoModelByUsuarioModelId(UUID idUsuario);
+    List<EnderecoModel> findEnderecoModelByUsuarioModelId(UUID idUsuario);
+
+    void deleteEnderecoModelById(UUID idEndereco);
+
+    EnderecoModel findEnderecoModelById(UUID idEndereco);
+
+    boolean existsById(UUID idEndereco);
 
 }

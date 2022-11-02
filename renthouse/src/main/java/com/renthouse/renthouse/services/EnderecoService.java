@@ -23,4 +23,16 @@ public class EnderecoService {
     public List<EnderecoModel> findEnderecoByUsuario(UUID idUsuario) {
         return enderecoRepository.findEnderecoModelByUsuarioModelId(idUsuario);
     }
+
+    public EnderecoModel buscaEnderecoPorId(UUID idEndereco) {
+        return enderecoRepository.findEnderecoModelById(idEndereco);
+    }
+
+    public Boolean existePorId(UUID idEndereco){
+        return enderecoRepository.existsById(idEndereco);
+    }
+
+    public void deletaEndereco(UUID idEndereco) {
+        enderecoRepository.deleteById(idEndereco);
+    }
 }
