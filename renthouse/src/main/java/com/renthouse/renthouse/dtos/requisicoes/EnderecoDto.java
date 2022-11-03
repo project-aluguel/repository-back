@@ -1,4 +1,4 @@
-package com.renthouse.renthouse.dtos;
+package com.renthouse.renthouse.dtos.requisicoes;
 
 import javax.validation.constraints.NotBlank;
 import java.util.UUID;

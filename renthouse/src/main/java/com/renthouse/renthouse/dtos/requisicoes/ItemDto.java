@@ -1,4 +1,4 @@
-package com.renthouse.renthouse.dtos;
+package com.renthouse.renthouse.dtos.requisicoes;
 
 import java.io.FileWriter;
 import java.io.IOException;

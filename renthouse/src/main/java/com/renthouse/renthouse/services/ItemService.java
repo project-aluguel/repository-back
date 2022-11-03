@@ -1,6 +1,5 @@
 package com.renthouse.renthouse.services;
 
-import com.renthouse.renthouse.dtos.ItemDto;
 import com.renthouse.renthouse.models.ItemModel;
 import com.renthouse.renthouse.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;

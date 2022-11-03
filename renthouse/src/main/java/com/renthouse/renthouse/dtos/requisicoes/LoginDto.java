@@ -1,4 +1,4 @@
-package com.renthouse.renthouse.dtos;
+package com.renthouse.renthouse.dtos.requisicoes;
 
 import com.renthouse.renthouse.models.UsuarioModel;
 

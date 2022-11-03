@@ -3,12 +3,11 @@ package com.renthouse.renthouse.controllers;
 // solicita para que a service execute a regra de negócio do endpoint
 // recebe os dados de dto e retorna para o usuario
 
-import com.renthouse.renthouse.dtos.AtualizaUsuarioDto;
-import com.renthouse.renthouse.dtos.LoginDto;
-import com.renthouse.renthouse.dtos.UsuarioDto;
+import com.renthouse.renthouse.dtos.requisicoes.AtualizaUsuarioDto;
+import com.renthouse.renthouse.dtos.requisicoes.LoginDto;
+import com.renthouse.renthouse.dtos.requisicoes.UsuarioDto;
 import com.renthouse.renthouse.excecao.ConflitoCpf;
 import com.renthouse.renthouse.excecao.ConflitoEmail;
-import com.renthouse.renthouse.models.EnderecoModel;
 import com.renthouse.renthouse.models.UsuarioModel;
 import com.renthouse.renthouse.services.EnderecoService;
 import com.renthouse.renthouse.services.UsuarioService;

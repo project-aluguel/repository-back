@@ -1,6 +1,6 @@
 package com.renthouse.renthouse.controllers;
 
-import com.renthouse.renthouse.dtos.EnderecoDto;
+import com.renthouse.renthouse.dtos.requisicoes.EnderecoDto;
 import com.renthouse.renthouse.excecao.EnderecoNaoExiste;
 import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
 import com.renthouse.renthouse.models.EnderecoModel;
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/enderecos")
 public class EnderecoController {
 
@@ -76,6 +77,25 @@ public class EnderecoController {
                 UUID idDeletado = enderecoService.buscaEnderecoPorId(idEndereco).getId();
                 enderecoService.deletaEndereco(idEndereco);
                 return ResponseEntity.status(200).body(idDeletado);
+            }
+            throw new EnderecoNaoExiste();
+        } catch (Exception erro) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @PutMapping("/{idEndereco}")
+    public ResponseEntity<EnderecoModel> atualizaEndereco(
+            @PathVariable UUID idEndereco,
+            @RequestBody EnderecoDto enderecoAtualizado
+    ) {
+        try {
+            if (enderecoService.existePorId(idEndereco)) {
+                EnderecoModel enderecoModel = enderecoService.buscaEnderecoPorId(idEndereco);
+                BeanUtils.copyProperties(enderecoAtualizado, enderecoModel);
+                enderecoModel.setAtualizadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+                enderecoService.save(enderecoModel);
+                return ResponseEntity.status(200).body(enderecoModel);
             }
             throw new EnderecoNaoExiste();
         } catch (Exception erro) {

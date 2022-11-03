@@ -1,7 +1,7 @@
 package com.renthouse.renthouse.controllers;
 
-import com.renthouse.renthouse.dtos.ItemDto;
-import com.renthouse.renthouse.dtos.ListaObjDto;
+import com.renthouse.renthouse.dtos.requisicoes.ItemDto;
+import com.renthouse.renthouse.dtos.requisicoes.ListaObjDto;
 import com.renthouse.renthouse.excecao.LimiteItensAtingido;
 import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
 import com.renthouse.renthouse.models.ItemModel;
@@ -11,7 +11,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.io.FileWriter;

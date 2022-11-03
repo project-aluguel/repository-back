@@ -1,6 +1,6 @@
 package com.renthouse.renthouse.controllers;
 
-import com.renthouse.renthouse.dtos.EmailDto;
+import com.renthouse.renthouse.dtos.requisicoes.EmailDto;
 import com.renthouse.renthouse.models.EmailModel;
 import com.renthouse.renthouse.services.EmailService;
 import org.springframework.beans.BeanUtils;
