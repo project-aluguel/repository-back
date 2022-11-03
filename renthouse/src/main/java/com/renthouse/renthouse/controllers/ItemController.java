@@ -57,17 +57,13 @@ public class ItemController {
 
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity buscarItensUsuario(@PathVariable UUID idUsuario) {
-        try {
-            if (usuarioService.findById(idUsuario).isEmpty()) {
+            if (!usuarioService.existsById(idUsuario)) {
                 throw new UsuarioNaoExiste();
             }
             if (itemService.getItensDeUsuario(idUsuario).isEmpty()) {
                 return ResponseEntity.status(204).build();
             }
             return ResponseEntity.status(200).body(itemService.getItensDeUsuario(idUsuario));
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).body(erro);
-        }
     }
 
     @DeleteMapping("/{indice}")

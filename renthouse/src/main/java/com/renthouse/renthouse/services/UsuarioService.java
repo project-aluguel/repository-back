@@ -1,6 +1,6 @@
 package com.renthouse.renthouse.services;
 
-import com.renthouse.renthouse.models.ItemModel;
+import com.renthouse.renthouse.dtos.requisicoes.LoginDto;
 import com.renthouse.renthouse.models.UsuarioModel;
 import com.renthouse.renthouse.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +50,10 @@ public class UsuarioService {
 
     public UsuarioModel findByEmail(String email) {
         return usuarioRepository.findByEmail(email);
+    }
+
+    public Optional<UsuarioModel> findByEmailAndPassword(LoginDto loginDto) {
+        return usuarioRepository.findByEmailAndSenha(loginDto.getEmail(), loginDto.getSenha());
     }
 
 

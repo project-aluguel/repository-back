@@ -44,44 +44,32 @@ public class EnderecoController {
 
     @GetMapping("/{idUsuario}")
     public ResponseEntity<List<EnderecoModel>> buscaEnderecosPorUsuario(@PathVariable UUID idUsuario) {
-        try {
-            if (usuarioService.findById(idUsuario).isEmpty()) {
-                throw new UsuarioNaoExiste();
-            }
-            List<EnderecoModel> enderecos = enderecoService.findEnderecoByUsuario(idUsuario);
-            if (enderecos.isEmpty()) {
-                return ResponseEntity.status(204).build();
-            }
-            return ResponseEntity.status(200).body(enderecos);
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).build();
+        if (!usuarioService.existsById(idUsuario)) {
+            throw new UsuarioNaoExiste();
         }
+        List<EnderecoModel> enderecos = enderecoService.findEnderecoByUsuario(idUsuario);
+        if (enderecos.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(enderecos);
     }
 
     @GetMapping("/busca/{idEndereco}")
     public ResponseEntity<EnderecoModel> buscaEnderecoPorId(@PathVariable UUID idEndereco) {
-        try {
-            if (enderecoService.existePorId(idEndereco)) {
-                return ResponseEntity.status(200).body(enderecoService.buscaEnderecoPorId(idEndereco));
-            }
-            throw new EnderecoNaoExiste();
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).build();
+        if (enderecoService.existePorId(idEndereco)) {
+            return ResponseEntity.status(200).body(enderecoService.buscaEnderecoPorId(idEndereco));
         }
+        throw new EnderecoNaoExiste();
     }
 
     @DeleteMapping("/{idEndereco}")
     public ResponseEntity<UUID> deletaEndereco(@PathVariable UUID idEndereco) {
-        try {
-            if (enderecoService.existePorId(idEndereco)) {
-                UUID idDeletado = enderecoService.buscaEnderecoPorId(idEndereco).getId();
-                enderecoService.deletaEndereco(idEndereco);
-                return ResponseEntity.status(200).body(idDeletado);
-            }
-            throw new EnderecoNaoExiste();
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).build();
+        if (enderecoService.existePorId(idEndereco)) {
+            UUID idDeletado = enderecoService.buscaEnderecoPorId(idEndereco).getId();
+            enderecoService.deletaEndereco(idEndereco);
+            return ResponseEntity.status(200).body(idDeletado);
         }
+        throw new EnderecoNaoExiste();
     }
 
     @PutMapping("/{idEndereco}")
@@ -89,18 +77,14 @@ public class EnderecoController {
             @PathVariable UUID idEndereco,
             @RequestBody EnderecoDto enderecoAtualizado
     ) {
-        try {
-            if (enderecoService.existePorId(idEndereco)) {
-                EnderecoModel enderecoModel = enderecoService.buscaEnderecoPorId(idEndereco);
-                BeanUtils.copyProperties(enderecoAtualizado, enderecoModel);
-                enderecoModel.setAtualizadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
-                enderecoService.save(enderecoModel);
-                return ResponseEntity.status(200).body(enderecoModel);
-            }
-            throw new EnderecoNaoExiste();
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).build();
+        if (enderecoService.existePorId(idEndereco)) {
+            EnderecoModel enderecoModel = enderecoService.buscaEnderecoPorId(idEndereco);
+            BeanUtils.copyProperties(enderecoAtualizado, enderecoModel);
+            enderecoModel.setAtualizadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+            enderecoService.save(enderecoModel);
+            return ResponseEntity.status(200).body(enderecoModel);
         }
+        throw new EnderecoNaoExiste();
     }
 
 }
