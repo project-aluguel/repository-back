@@ -1,5 +1,6 @@
 package com.renthouse.renthouse.dtos.requisicoes;
 
+import java.awt.image.BufferedImage;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Formatter;
@@ -23,6 +24,10 @@ public class ItemDto {
     private Boolean alugado;
 
     private UUID idUsuario;
+
+    private Boolean entregaFrete;
+
+    private Boolean entregaPessoal;
 
     public String getNome() {
         return nome;
@@ -56,4 +61,11 @@ public class ItemDto {
         return idUsuario;
     }
 
+    public Boolean getEntregaFrete() {
+        return entregaFrete;
+    }
+
+    public Boolean getEntregaPessoal() {
+        return entregaPessoal;
+    }
 }

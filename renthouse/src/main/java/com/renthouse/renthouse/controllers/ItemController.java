@@ -2,6 +2,7 @@ package com.renthouse.renthouse.controllers;
 
 import com.renthouse.renthouse.dtos.requisicoes.ItemDto;
 import com.renthouse.renthouse.dtos.requisicoes.ListaObjDto;
+import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
 import com.renthouse.renthouse.excecao.LimiteItensAtingido;
 import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
 import com.renthouse.renthouse.models.ItemModel;
@@ -35,77 +36,35 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<ItemDto> criarItem(@RequestBody ItemDto itemDto) {
-        try {
-            if (!usuarioService.existsById(itemDto.getIdUsuario())) {
-                throw new UsuarioNaoExiste();
-            }
-            if (itensVetor.getTamanho() >= 50) {
-                throw new LimiteItensAtingido();
-            }
-            ItemModel itemModel = new ItemModel();
-            BeanUtils.copyProperties(itemDto, itemModel);
-            itemModel.setUsuarioModel(usuarioService.findById(itemDto.getIdUsuario()).get());
-            itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
-            itemService.save(itemModel);
-            itensVetor.adiciona(itemModel);
-
-            return ResponseEntity.status(201).body(itemDto);
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).build();
+        if (!usuarioService.existsById(itemDto.getIdUsuario())) {
+            throw new UsuarioNaoExiste();
         }
+        if (itensVetor.getTamanho() >= 50) {
+            throw new LimiteItensAtingido();
+        }
+        ItemModel itemModel = new ItemModel();
+        BeanUtils.copyProperties(itemDto, itemModel);
+        itemModel.setUsuarioModel(usuarioService.findById(itemDto.getIdUsuario()).get());
+        itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+        itemService.save(itemModel);
+        itensVetor.adiciona(itemModel);
+        return ResponseEntity.status(201).body(itemDto);
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity buscarItensUsuario(@PathVariable UUID idUsuario) {
-            if (!usuarioService.existsById(idUsuario)) {
-                throw new UsuarioNaoExiste();
-            }
-            if (itemService.getItensDeUsuario(idUsuario).isEmpty()) {
-                return ResponseEntity.status(204).build();
-            }
-            return ResponseEntity.status(200).body(itemService.getItensDeUsuario(idUsuario));
-    }
-
-    @DeleteMapping("/{indice}")
-    public ResponseEntity removerPorIndice(@PathVariable int indice) {
-        try {
-            if (itensVetor.removePeloIndice(indice)) {
-                return ResponseEntity.status(200).build();
-            }
-
-            return ResponseEntity.status(400).body("Índice inexistente");
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).body(erro);
+    public ResponseEntity<List<ItensUsuario>> buscarItensUsuario(@PathVariable UUID idUsuario) {
+        if (!usuarioService.existsById(idUsuario)) {
+            throw new UsuarioNaoExiste();
         }
-    }
-
-    @DeleteMapping
-    public ResponseEntity removerElemento(@RequestBody @Valid ItemModel itemModel) {
-        try {
-            if (itensVetor.removeElemento(itemModel)) {
-                return ResponseEntity.status(200).build();
-            }
-            return ResponseEntity.status(400).body("Elemento inexistente");
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).body(erro);
+        if (itemService.getItensDeUsuario(idUsuario).isEmpty()) {
+            return ResponseEntity.status(204).build();
         }
-    }
-
-    @GetMapping("/{indice}")
-    public ResponseEntity buscarElemento(@PathVariable int indice) {
-        try {
-            if (itensVetor.getElemento(indice) == null) {
-                return ResponseEntity.status(400).body("Índice inexistente");
-            }
-            return ResponseEntity.status(200).body(itensVetor.getElemento(indice));
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).body(erro);
-        }
+        return ResponseEntity.status(200).body(itemService.getItensDeUsuario(idUsuario));
     }
 
     @GetMapping("/ordem")
-    public ResponseEntity ordenaPorPreco() {
-        try {
+    public ResponseEntity<ItemModel[]> ordenaPorPreco() {
+//            deve limpar o vetor e buscar todos itens do usuario para evitar itens desatualizados na lista
             if (itensVetor.getTamanho() == 0) {
                 return ResponseEntity.status(204).build();
             }
@@ -113,9 +72,6 @@ public class ItemController {
             itensVetor.ordenaArray(itens);
 
             return ResponseEntity.status(200).body(itens);
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).body(erro);
-        }
     }
 
     @GetMapping("/csv")
@@ -139,14 +95,16 @@ public class ItemController {
                 ItemDto item = new ItemDto();
                 BeanUtils.copyProperties(itensVetor.getElemento(i), item);
                 saida.format(
-                        "%s;%s;%s;%s;%.2f;%.2f;%b\n",
+                        "%s;%s;%s;%s;%.2f;%.2f;%b;%b;%b\n",
                         item.getNome(),
                         item.getCategoria(),
                         item.getDescricao(),
                         item.getManualUso(),
                         item.getValorItem(),
                         item.getValorGarantia(),
-                        item.getAlugado()
+                        item.getAlugado(),
+                        item.getEntregaFrete(),
+                        item.getEntregaPessoal()
                 );
             }
         } catch (FormatterClosedException erro) {
@@ -168,7 +126,7 @@ public class ItemController {
         return ResponseEntity.status(200).build();
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{idItem}")
     public ResponseEntity atualizaItem(@PathVariable UUID id, @RequestBody ItemDto itemAtualizado) {
         try {
             Optional<ItemModel> itemBuscado = itemService.findById(id);

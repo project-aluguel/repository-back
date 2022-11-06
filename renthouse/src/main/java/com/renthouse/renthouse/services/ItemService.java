@@ -1,5 +1,6 @@
 package com.renthouse.renthouse.services;
 
+import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
 import com.renthouse.renthouse.models.ItemModel;
 import com.renthouse.renthouse.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class ItemService {
         itemRepository.delete(itemModel);
     }
 
-    public List<ItemModel> getItensDeUsuario(UUID idUsuario) {
-        return itemRepository.findItemModelByUsuarioModelId(idUsuario);
+    public List<ItensUsuario> getItensDeUsuario(UUID idUsuario) {
+        return itemRepository.getItensUsuario(idUsuario);
     }
 }

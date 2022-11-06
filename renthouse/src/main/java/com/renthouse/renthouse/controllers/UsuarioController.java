@@ -48,16 +48,12 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity getAllUsuarios() {
-        try {
-            List<UsuarioModel> usuarios = usuarioService.findAll();
-            if (usuarios.isEmpty()) {
-                return ResponseEntity.status(204).build();
-            }
-            return ResponseEntity.status(200).body(usuarios);
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).body(erro);
+    public ResponseEntity<List<UsuarioModel>> getAllUsuarios() {
+        List<UsuarioModel> usuarios = usuarioService.findAll();
+        if (usuarios.isEmpty()) {
+            return ResponseEntity.status(204).build();
         }
+        return ResponseEntity.status(200).body(usuarios);
     }
 
     @GetMapping("/{idUsuario}")

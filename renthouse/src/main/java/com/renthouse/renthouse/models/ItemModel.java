@@ -40,6 +40,12 @@ public class ItemModel implements Serializable {
     private Boolean alugado;
 
     @Column
+    private Boolean entregaFrete;
+
+    @Column
+    private Boolean entregaPessoal;
+
+    @Column
     private LocalDateTime dataCriacao;
 
     @Column
@@ -134,6 +140,22 @@ public class ItemModel implements Serializable {
 
     public void setUsuarioModel(UsuarioModel usuarioModel) {
         this.usuarioModel = usuarioModel;
+    }
+
+    public Boolean getEntregaFrete() {
+        return entregaFrete;
+    }
+
+    public void setEntregaFrete(Boolean entregaFrete) {
+        this.entregaFrete = entregaFrete;
+    }
+
+    public Boolean getEntregaPessoal() {
+        return entregaPessoal;
+    }
+
+    public void setEntregaPessoal(Boolean entregaPessoal) {
+        this.entregaPessoal = entregaPessoal;
     }
 
     @Override
