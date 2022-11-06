@@ -3,9 +3,11 @@ package com.renthouse.renthouse.controllers;
 import com.renthouse.renthouse.dtos.requisicoes.ItemDto;
 import com.renthouse.renthouse.dtos.requisicoes.ListaObjDto;
 import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
+import com.renthouse.renthouse.excecao.ItemNaoExiste;
 import com.renthouse.renthouse.excecao.LimiteItensAtingido;
 import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
 import com.renthouse.renthouse.models.ItemModel;
+import com.renthouse.renthouse.models.UsuarioModel;
 import com.renthouse.renthouse.services.ItemService;
 import com.renthouse.renthouse.services.UsuarioService;
 import org.springframework.beans.BeanUtils;
@@ -35,7 +37,7 @@ public class ItemController {
     private ListaObjDto<ItemModel> itensVetor = new ListaObjDto<>(50);
 
     @PostMapping
-    public ResponseEntity<ItemDto> criarItem(@RequestBody ItemDto itemDto) {
+    public ResponseEntity<UUID> criarItem(@RequestBody ItemDto itemDto) {
         if (!usuarioService.existsById(itemDto.getIdUsuario())) {
             throw new UsuarioNaoExiste();
         }
@@ -45,10 +47,9 @@ public class ItemController {
         ItemModel itemModel = new ItemModel();
         BeanUtils.copyProperties(itemDto, itemModel);
         itemModel.setUsuarioModel(usuarioService.findById(itemDto.getIdUsuario()).get());
-        itemModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
-        itemService.save(itemModel);
+        itemModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
         itensVetor.adiciona(itemModel);
-        return ResponseEntity.status(201).body(itemDto);
+        return ResponseEntity.status(201).body(itemService.save(itemModel).getId());
     }
 
     @GetMapping("/usuario/{idUsuario}")
@@ -64,14 +65,13 @@ public class ItemController {
 
     @GetMapping("/ordem")
     public ResponseEntity<ItemModel[]> ordenaPorPreco() {
-//            deve limpar o vetor e buscar todos itens do usuario para evitar itens desatualizados na lista
-            if (itensVetor.getTamanho() == 0) {
-                return ResponseEntity.status(204).build();
-            }
-            ItemModel[] itens = itemService.findAll().toArray(new ItemModel[0]);
-            itensVetor.ordenaArray(itens);
+        if (itensVetor.getTamanho() == 0) {
+            return ResponseEntity.status(204).build();
+        }
+        ItemModel[] itens = itemService.findAll().toArray(new ItemModel[0]);
+        itensVetor.ordenaArray(itens);
 
-            return ResponseEntity.status(200).body(itens);
+        return ResponseEntity.status(200).body(itens);
     }
 
     @GetMapping("/csv")
@@ -127,29 +127,33 @@ public class ItemController {
     }
 
     @PutMapping("/{idItem}")
-    public ResponseEntity atualizaItem(@PathVariable UUID id, @RequestBody ItemDto itemAtualizado) {
-        try {
-            Optional<ItemModel> itemBuscado = itemService.findById(id);
+    public ResponseEntity<ItemModel> atualizaItem(@PathVariable UUID idItem, @RequestBody ItemDto itemAtualizado) {
+        if (!itemService.findById(idItem).isEmpty()) {
+            ItemModel itemModel = itemService.findById(idItem).get();
+            BeanUtils.copyProperties(itemAtualizado, itemModel);
+            itemModel.setAtualizadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+            itemService.save(itemModel);
+            atualizaVetor(itemModel.getUsuarioModel().getId());
+            return ResponseEntity.status(200).body(itemModel);
+        }
+        throw new ItemNaoExiste();
+    }
 
-            if (itemBuscado.isEmpty()) {
-                return ResponseEntity.status(400).body("ID inexistente na base de dados");
-            }
+    @DeleteMapping("/{idItem}")
+    public ResponseEntity<UUID> deletaItem(@PathVariable UUID idItem) {
+        if (!itemService.findById(idItem).isEmpty()) {
+            itemService.delete(itemService.findById(idItem).get());
+            return ResponseEntity.status(200).body(idItem);
+        }
+        throw new ItemNaoExiste();
+    }
 
-            int indice = itensVetor.busca(itemBuscado.get());
-
-            if (indice == -1) {
-                return ResponseEntity.status(400).body("Item inexistente no vetor");
-            }
-
-            ItemModel item = itensVetor.getElemento(indice);
-            BeanUtils.copyProperties(itemAtualizado, item);
-            item.setDataAtualizacao(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
-            itensVetor.atualiza(indice, item);
-
-            return ResponseEntity.status(200).body(itemAtualizado);
-
-        } catch (Exception erro) {
-            return ResponseEntity.status(500).body(erro);
+    public void atualizaVetor(UUID idUsuario) {
+        itensVetor.limpa();
+        List<ItemModel> itens = itemService.getItensDeUsuarioVetor(idUsuario);
+        for (ItemModel itemDaVez :
+                itens) {
+            itensVetor.adiciona(itemDaVez);
         }
     }
 }

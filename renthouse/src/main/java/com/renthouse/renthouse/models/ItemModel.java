@@ -46,10 +46,10 @@ public class ItemModel implements Serializable {
     private Boolean entregaPessoal;
 
     @Column
-    private LocalDateTime dataCriacao;
+    private LocalDateTime criadoEm;
 
     @Column
-    private LocalDateTime dataAtualizacao;
+    private LocalDateTime atualizadoEm;
 
     @ManyToOne
     private UsuarioModel usuarioModel;
@@ -118,22 +118,6 @@ public class ItemModel implements Serializable {
         this.alugado = alugado;
     }
 
-    public LocalDateTime getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(LocalDateTime dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    public LocalDateTime getDataAtualizacao() {
-        return dataAtualizacao;
-    }
-
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
-        this.dataAtualizacao = dataAtualizacao;
-    }
-
     public UsuarioModel getUsuarioModel() {
         return usuarioModel;
     }
@@ -158,19 +142,22 @@ public class ItemModel implements Serializable {
         this.entregaPessoal = entregaPessoal;
     }
 
-    @Override
-    public String toString() {
-        return "ItemModel{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", manualUso='" + manualUso + '\'' +
-                ", valorGarantia=" + valorGarantia +
-                ", valorItem=" + valorItem +
-                ", alugado=" + alugado +
-                ", dataCriacao=" + dataCriacao +
-                ", dataAtualizacao=" + dataAtualizacao +
-                '}';
+    public LocalDateTime getCriadoEm() {
+        return criadoEm;
     }
+
+    public void setCriadoEm(LocalDateTime criadoEm) {
+        this.criadoEm = criadoEm;
+    }
+
+    public LocalDateTime getAtualizadoEm() {
+        return atualizadoEm;
+    }
+
+    public void setAtualizadoEm(LocalDateTime atualizadoEm) {
+        this.atualizadoEm = atualizadoEm;
+    }
+
 
     public boolean comparar(Object objeto1, Object objeto2) {
 

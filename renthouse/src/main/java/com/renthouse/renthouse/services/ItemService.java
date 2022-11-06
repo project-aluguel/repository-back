@@ -38,4 +38,8 @@ public class ItemService {
     public List<ItensUsuario> getItensDeUsuario(UUID idUsuario) {
         return itemRepository.getItensUsuario(idUsuario);
     }
+
+    public List<ItemModel> getItensDeUsuarioVetor(UUID idUsuario) {
+        return itemRepository.findItemModelByUsuarioModelId(idUsuario);
+    }
 }
