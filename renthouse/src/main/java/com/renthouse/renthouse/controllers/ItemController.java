@@ -38,6 +38,7 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<UUID> criarItem(@RequestBody ItemDto itemDto) {
+        System.out.println(itemDto.getIdUsuario());
         if (!usuarioService.existsById(itemDto.getIdUsuario())) {
             throw new UsuarioNaoExiste();
         }

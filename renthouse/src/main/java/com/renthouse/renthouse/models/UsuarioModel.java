@@ -21,31 +21,31 @@ public class UsuarioModel implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column
     private Boolean autenticado = false;
 
-    @Column(nullable = false, unique = true, length = 45)
+    @Column
     private String email;
 
-    @Column(nullable = false, length = 45)
+    @Column
     private String senha;
 
-    @Column(nullable = false, length = 45)
+    @Column
     private String nomeCompleto;
 
-    @Column(nullable = false, length = 10)
+    @Column
     private LocalDate dataNascimento;
 
-    @Column(nullable = false, length = 11)
+    @Column
     private String cpf;
 
-    @Column(nullable = false, length = 11)
+    @Column
     private String telefone;
 
-    @Column(nullable = false, length = 70)
+    @Column
     private LocalDateTime criadoEm;
 
-    @Column(nullable = true, length = 70)
+    @Column
     private LocalDateTime atualizadoEm;
 
     public UUID getId() {
