@@ -130,7 +130,11 @@ public class ItemController {
 
     @GetMapping("/catalogo")
     public ResponseEntity<List<ItensCatalogo>> buscaItensCatalogo() {
-        return ResponseEntity.status(200).body(itemService.buscaItensCatalogo());
+        List<ItensCatalogo> listaItens = itemService.buscaItensCatalogo();
+        if (listaItens.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(listaItens);
     }
 
     @PutMapping("/{idItem}")
