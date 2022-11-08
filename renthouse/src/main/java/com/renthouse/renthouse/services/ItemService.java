@@ -1,5 +1,6 @@
 package com.renthouse.renthouse.services;
 
+import com.renthouse.renthouse.dtos.respostas.ItensCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
 import com.renthouse.renthouse.models.ItemModel;
 import com.renthouse.renthouse.repositories.ItemRepository;
@@ -49,5 +50,9 @@ public class ItemService {
 
     public boolean isAlugado(UUID idItem) {
         return findById(idItem).get().getAlugado();
+    }
+
+    public List<ItensCatalogo> buscaItensCatalogo() {
+        return itemRepository.getItensCatalogo();
     }
 }

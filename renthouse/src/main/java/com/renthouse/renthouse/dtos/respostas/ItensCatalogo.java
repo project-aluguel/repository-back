@@ -8,6 +8,12 @@ public class ItensCatalogo {
     private String nome;
     private Double valorItem;
 
+    public ItensCatalogo(UUID id, String nome, Double valorItem) {
+        this.id = id;
+        this.nome = nome;
+        this.valorItem = valorItem;
+    }
+
     public UUID getId() {
         return id;
     }

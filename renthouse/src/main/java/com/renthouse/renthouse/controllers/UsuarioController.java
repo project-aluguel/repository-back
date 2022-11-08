@@ -71,7 +71,7 @@ public class UsuarioController {
         throw new UsuarioNaoExiste();
     }
 
-    @PutMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<UsuarioModel> efetuaLogin(@RequestBody LoginDto loginDto) {
         Optional<UsuarioModel> usuario = usuarioService.findByEmailAndPassword(loginDto);
         if (!usuario.isEmpty()) {

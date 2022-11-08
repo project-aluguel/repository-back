@@ -1,5 +1,6 @@
 package com.renthouse.renthouse.repositories;
 
+import com.renthouse.renthouse.dtos.respostas.ItensCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
 import com.renthouse.renthouse.models.ItemModel;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,5 +21,11 @@ public interface ItemRepository extends JpaRepository<ItemModel, UUID> {
     List<ItensUsuario> getItensUsuario(UUID idUsuario);
 
     List<ItemModel> findItemModelByUsuarioModelId(UUID idUsuario);
+
+    @Query("select new " +
+            " com.renthouse.renthouse.dtos.respostas.ItensCatalogo" +
+            "(im.id, im.nome, im.valorItem) " +
+            " from ItemModel im where im.alugado = false ")
+    List<ItensCatalogo> getItensCatalogo();
 
 }

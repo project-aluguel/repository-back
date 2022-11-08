@@ -2,6 +2,7 @@ package com.renthouse.renthouse.controllers;
 
 import com.renthouse.renthouse.dtos.requisicoes.ItemDto;
 import com.renthouse.renthouse.dtos.requisicoes.ListaObjDto;
+import com.renthouse.renthouse.dtos.respostas.ItensCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
 import com.renthouse.renthouse.excecao.ItemNaoExiste;
 import com.renthouse.renthouse.excecao.LimiteItensAtingido;
@@ -125,6 +126,11 @@ public class ItemController {
             }
         }
         return ResponseEntity.status(200).build();
+    }
+
+    @GetMapping("/catalogo")
+    public ResponseEntity<List<ItensCatalogo>> buscaItensCatalogo() {
+        return ResponseEntity.status(200).body(itemService.buscaItensCatalogo());
     }
 
     @PutMapping("/{idItem}")
