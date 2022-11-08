@@ -42,4 +42,12 @@ public class ItemService {
     public List<ItemModel> getItensDeUsuarioVetor(UUID idUsuario) {
         return itemRepository.findItemModelByUsuarioModelId(idUsuario);
     }
+
+    public boolean existsById(UUID idItem) {
+        return itemRepository.existsById(idItem);
+    }
+
+    public boolean isAlugado(UUID idItem) {
+        return findById(idItem).get().getAlugado();
+    }
 }
