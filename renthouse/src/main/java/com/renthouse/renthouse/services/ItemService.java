@@ -55,4 +55,8 @@ public class ItemService {
     public List<ItensCatalogo> buscaItensCatalogo(UUID idUsuario) {
         return itemRepository.getItensCatalogo(idUsuario);
     }
+
+    public List<ItensCatalogo> buscaItensCatalogoPorCategoria(String categoria, UUID idUsuario) {
+        return itemRepository.getItensCatalogoPorCategoria(categoria, idUsuario);
+    }
 }

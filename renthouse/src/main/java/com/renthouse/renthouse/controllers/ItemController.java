@@ -39,7 +39,6 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<UUID> criarItem(@RequestBody ItemDto itemDto) {
-        System.out.println(itemDto.getIdUsuario());
         if (!usuarioService.existsById(itemDto.getIdUsuario())) {
             throw new UsuarioNaoExiste();
         }
@@ -48,6 +47,8 @@ public class ItemController {
         }
         ItemModel itemModel = new ItemModel();
         BeanUtils.copyProperties(itemDto, itemModel);
+        itemModel.setNome(itemDto.getNome().toUpperCase());
+        itemModel.setCategoria(itemDto.getCategoria().toUpperCase());
         itemModel.setUsuarioModel(usuarioService.findById(itemDto.getIdUsuario()).get());
         itemModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
         itensVetor.adiciona(itemModel);
@@ -131,7 +132,17 @@ public class ItemController {
     @GetMapping("/catalogo/{idUsuario}")
     public ResponseEntity<List<ItensCatalogo>> buscaItensCatalogo(@PathVariable UUID idUsuario) {
         List<ItensCatalogo> listaItens = itemService.buscaItensCatalogo(idUsuario);
-        if (listaItens.isEmpty()){
+        if (listaItens.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(listaItens);
+    }
+
+    @GetMapping("/catalogo/{idUsuario}/{categoria}")
+    public ResponseEntity<List<ItensCatalogo>> buscaItensCatalogoPorCategoria(@PathVariable UUID idUsuario, @PathVariable String categoria) {
+        categoria = categoria.toUpperCase();
+        List<ItensCatalogo> listaItens = itemService.buscaItensCatalogoPorCategoria(categoria, idUsuario);
+        if (listaItens.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(200).body(listaItens);
