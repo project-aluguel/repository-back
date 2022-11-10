@@ -128,9 +128,9 @@ public class ItemController {
         return ResponseEntity.status(200).build();
     }
 
-    @GetMapping("/catalogo")
-    public ResponseEntity<List<ItensCatalogo>> buscaItensCatalogo() {
-        List<ItensCatalogo> listaItens = itemService.buscaItensCatalogo();
+    @GetMapping("/catalogo/{idUsuario}")
+    public ResponseEntity<List<ItensCatalogo>> buscaItensCatalogo(@PathVariable UUID idUsuario) {
+        List<ItensCatalogo> listaItens = itemService.buscaItensCatalogo(idUsuario);
         if (listaItens.isEmpty()){
             return ResponseEntity.status(204).build();
         }

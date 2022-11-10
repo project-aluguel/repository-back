@@ -25,7 +25,7 @@ public interface ItemRepository extends JpaRepository<ItemModel, UUID> {
     @Query("select new " +
             " com.renthouse.renthouse.dtos.respostas.ItensCatalogo" +
             "(im.id, im.nome, im.valorItem) " +
-            " from ItemModel im where im.alugado = false ")
-    List<ItensCatalogo> getItensCatalogo();
+            " from ItemModel im where im.alugado = false and not im.usuarioModel.id = ?1")
+    List<ItensCatalogo> getItensCatalogo(UUID idUsuario);
 
 }

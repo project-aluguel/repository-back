@@ -52,7 +52,7 @@ public class ItemService {
         return findById(idItem).get().getAlugado();
     }
 
-    public List<ItensCatalogo> buscaItensCatalogo() {
-        return itemRepository.getItensCatalogo();
+    public List<ItensCatalogo> buscaItensCatalogo(UUID idUsuario) {
+        return itemRepository.getItensCatalogo(idUsuario);
     }
 }
