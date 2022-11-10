@@ -138,10 +138,23 @@ public class ItemController {
         return ResponseEntity.status(200).body(listaItens);
     }
 
-    @GetMapping("/catalogo/{idUsuario}/{categoria}")
-    public ResponseEntity<List<ItensCatalogo>> buscaItensCatalogoPorCategoria(@PathVariable UUID idUsuario, @PathVariable String categoria) {
+    @GetMapping("/catalogo/{idUsuario}/categoria/{categoria}")
+    public ResponseEntity<List<ItensCatalogo>> buscaItensCatalogoPorCategoria(
+            @PathVariable UUID idUsuario,
+            @PathVariable String categoria
+    ) {
         categoria = categoria.toUpperCase();
         List<ItensCatalogo> listaItens = itemService.buscaItensCatalogoPorCategoria(categoria, idUsuario);
+        if (listaItens.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(listaItens);
+    }
+
+    @GetMapping("/catalogo/{idUsuario}/nome/{nome}")
+    public ResponseEntity<List<ItensCatalogo>> buscaItensCatalogoPorNome(@PathVariable UUID idUsuario, @PathVariable String nome) {
+        nome = nome.toUpperCase();
+        List<ItensCatalogo> listaItens = itemService.buscaItensCatalogoPorNome(nome, idUsuario);
         if (listaItens.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
