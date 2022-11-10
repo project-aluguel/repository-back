@@ -41,12 +41,13 @@ public class NegociacaoController {
         if (!itemService.existsById(registroNegociacao.getIdItem())) {
             throw new ItemNaoExiste();
         }
-        if (!itemService.isAlugado(registroNegociacao.getIdItem())) {
+        if (itemService.isAlugado(registroNegociacao.getIdItem())) {
             throw new ItemAlugado();
         }
         NegociacaoModel negociacaoModel = new NegociacaoModel();
         BeanUtils.copyProperties(registroNegociacao, negociacaoModel);
         negociacaoModel.setIdItem(itemService.findById(registroNegociacao.getIdItem()).get());
+        itemService.atualizaItemParaEmprestado(registroNegociacao.getIdItem());
         negociacaoModel.setIdProprietario(usuarioService.findById(registroNegociacao.getIdProprietario()).get());
         negociacaoModel.setIdAlugador(usuarioService.findById(registroNegociacao.getIdAlugador()).get());
         negociacaoModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));

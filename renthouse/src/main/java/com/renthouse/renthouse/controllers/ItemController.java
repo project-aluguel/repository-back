@@ -152,7 +152,10 @@ public class ItemController {
     }
 
     @GetMapping("/catalogo/{idUsuario}/nome/{nome}")
-    public ResponseEntity<List<ItensCatalogo>> buscaItensCatalogoPorNome(@PathVariable UUID idUsuario, @PathVariable String nome) {
+    public ResponseEntity<List<ItensCatalogo>> buscaItensCatalogoPorNome(
+            @PathVariable UUID idUsuario,
+            @PathVariable String nome
+    ) {
         nome = nome.toUpperCase();
         List<ItensCatalogo> listaItens = itemService.buscaItensCatalogoPorNome(nome, idUsuario);
         if (listaItens.isEmpty()) {

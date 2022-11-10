@@ -63,4 +63,10 @@ public class ItemService {
     public List<ItensCatalogo> buscaItensCatalogoPorNome(String nome, UUID idUsuario) {
         return itemRepository.getItensCatalogoPorNome(nome, idUsuario);
     }
+
+    public void atualizaItemParaEmprestado(UUID idItem) {
+        ItemModel item = findById(idItem).get();
+        item.setAlugado(true);
+        itemRepository.save(item);
+    }
 }
