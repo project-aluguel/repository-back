@@ -128,19 +128,6 @@ public class UsuarioModel implements Serializable {
         this.autenticado = autenticado;
     }
 
-    public boolean comparar(Object objeto1, Object objeto2) {
-
-        UsuarioModel usuario1 = new UsuarioModel();
-        UsuarioModel usuario2 = new UsuarioModel();
-        BeanUtils.copyProperties(objeto1, usuario1);
-        BeanUtils.copyProperties(objeto2, usuario2);
-
-        if (usuario1.getId().equals(usuario2.getId())) {
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public boolean equals(Object obj) {
         //se nao forem objetos da mesma classe sao objetos diferentes
@@ -151,4 +138,19 @@ public class UsuarioModel implements Serializable {
 
     }
 
+    @Override
+    public String toString() {
+        return "UsuarioModel{" +
+                "id=" + id +
+                ", autenticado=" + autenticado +
+                ", email='" + email + '\'' +
+                ", senha='" + senha + '\'' +
+                ", nomeCompleto='" + nomeCompleto + '\'' +
+                ", dataNascimento=" + dataNascimento +
+                ", cpf='" + cpf + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", criadoEm=" + criadoEm +
+                ", atualizadoEm=" + atualizadoEm +
+                '}';
+    }
 }

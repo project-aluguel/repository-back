@@ -41,8 +41,7 @@ public class UsuarioController {
         BeanUtils.copyProperties(usuarioDto, usuarioModel);
         usuarioModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
         usuarioService.save(usuarioModel);
-        UUID idUsuario = usuarioService.findByEmail(usuarioDto.getEmail()).getId();
-        return ResponseEntity.status(201).body(idUsuario);
+        return ResponseEntity.status(201).body(usuarioModel.getId());
     }
 
     @GetMapping
