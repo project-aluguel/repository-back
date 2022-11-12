@@ -6,6 +6,7 @@ import com.renthouse.renthouse.repositories.CarteiraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,5 +25,13 @@ public class CarteiraService {
 
     public Boolean existsByIdUsuario(UUID idUsuario){
         return repository.existsByUsuarioModelId(idUsuario);
+    }
+
+    public Boolean existsByIdCarteira(UUID idCarteira){
+        return repository.existsById(idCarteira);
+    }
+
+    public Optional<CarteiraModel> buscaCarteiraPorIdCarteira(UUID idCarteira){
+        return repository.findById(idCarteira);
     }
 }

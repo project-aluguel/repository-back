@@ -1,8 +1,10 @@
 package com.renthouse.renthouse.controllers;
 
+import com.renthouse.renthouse.dtos.requisicoes.RecargaCarteira;
 import com.renthouse.renthouse.dtos.respostas.CarteiraUsuario;
 import com.renthouse.renthouse.excecao.CarteiraUsuarioNaoExiste;
 import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
+import com.renthouse.renthouse.excecao.ValorNegativo;
 import com.renthouse.renthouse.models.CarteiraModel;
 import com.renthouse.renthouse.models.UsuarioModel;
 import com.renthouse.renthouse.services.CarteiraService;
@@ -46,6 +48,25 @@ public class CarteiraController {
             throw new CarteiraUsuarioNaoExiste();
         }
         return ResponseEntity.status(200).body(carteiraService.buscaCarteira(idUsuario));
+    }
+
+    @PutMapping("{idCarteira}")
+    public ResponseEntity<CarteiraUsuario> atualizaCarteira(
+            @PathVariable UUID idCarteira,
+            @RequestBody RecargaCarteira recargaCarteira
+    ) {
+        if (!carteiraService.existsByIdCarteira(idCarteira)) {
+            throw new CarteiraUsuarioNaoExiste();
+        }
+        if (recargaCarteira.getRecarga() < 0.0) {
+            throw new ValorNegativo();
+        }
+        CarteiraModel carteiraModel = carteiraService.buscaCarteiraPorIdCarteira(idCarteira).get();
+        carteiraModel.setSaldo(carteiraModel.getSaldo() + recargaCarteira.getRecarga());
+        carteiraModel.setAtualizadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+        carteiraService.save(carteiraModel);
+        return ResponseEntity.status(200)
+                .body(carteiraService.buscaCarteira(carteiraModel.getUsuarioModel().getId()));
     }
 
 }
