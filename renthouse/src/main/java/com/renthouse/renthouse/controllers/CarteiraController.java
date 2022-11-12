@@ -1,5 +1,7 @@
 package com.renthouse.renthouse.controllers;
 
+import com.renthouse.renthouse.dtos.respostas.CarteiraUsuario;
+import com.renthouse.renthouse.excecao.CarteiraUsuarioNaoExiste;
 import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
 import com.renthouse.renthouse.models.CarteiraModel;
 import com.renthouse.renthouse.models.UsuarioModel;
@@ -36,6 +38,14 @@ public class CarteiraController {
         carteiraModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
         carteiraService.save(carteiraModel);
         return ResponseEntity.status(201).body(carteiraModel.getCarteiraId());
+    }
+
+    @GetMapping("{idUsuario}")
+    public ResponseEntity<CarteiraUsuario> buscaCarteira(@PathVariable UUID idUsuario) {
+        if (!carteiraService.existsByIdUsuario(idUsuario)) {
+            throw new CarteiraUsuarioNaoExiste();
+        }
+        return ResponseEntity.status(200).body(carteiraService.buscaCarteira(idUsuario));
     }
 
 }
