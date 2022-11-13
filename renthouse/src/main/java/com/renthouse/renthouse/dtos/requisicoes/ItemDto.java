@@ -16,6 +16,7 @@ public class ItemDto {
     private String descricao;
 
     private String manualUso;
+    private String imagem;
 
     private Double valorGarantia;
 
@@ -47,6 +48,10 @@ public class ItemDto {
 
     public Double getValorGarantia() {
         return valorGarantia;
+    }
+
+    public String getImagem() {
+        return imagem;
     }
 
     public Double getValorItem() {

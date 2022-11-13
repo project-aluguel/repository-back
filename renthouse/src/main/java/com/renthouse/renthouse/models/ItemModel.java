@@ -31,6 +31,9 @@ public class ItemModel implements Serializable {
     private String manualUso;
 
     @Column
+    private String imagem;
+
+    @Column
     private Double valorGarantia;
 
     @Column
@@ -158,6 +161,14 @@ public class ItemModel implements Serializable {
         this.atualizadoEm = atualizadoEm;
     }
 
+
+    public String getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
+    }
 
     public boolean comparar(Object objeto1, Object objeto2) {
 

@@ -6,6 +6,7 @@ public class ItensUsuario {
 
     private UUID idItem;
     private String nome;
+    private String imagem;
     private String manualUso;
     private String descricao;
     private String categoria;
@@ -18,6 +19,7 @@ public class ItensUsuario {
     public ItensUsuario(
             UUID idItem,
             String nome,
+            String imagem,
             String manualUso,
             String descricao,
             String categoria,
@@ -29,6 +31,7 @@ public class ItensUsuario {
     ) {
         this.idItem = idItem;
         this.nome = nome;
+        this.imagem = imagem;
         this.manualUso = manualUso;
         this.descricao = descricao;
         this.categoria = categoria;
@@ -57,6 +60,10 @@ public class ItensUsuario {
 
     public String getCategoria() {
         return categoria;
+    }
+
+    public String getImagem() {
+        return imagem;
     }
 
     public Double getValorItem() {
