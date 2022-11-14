@@ -1,9 +1,11 @@
-package com.renthouse.renthouse.dtos.requisicoes;
+package com.renthouse.renthouse.adt;
 
 import com.renthouse.renthouse.models.ItemModel;
 import com.renthouse.renthouse.models.UsuarioModel;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ListaObjDto<T> {
+
 
     private T[] vetor;
 

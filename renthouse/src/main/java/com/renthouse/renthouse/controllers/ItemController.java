@@ -1,14 +1,15 @@
 package com.renthouse.renthouse.controllers;
 
+import com.renthouse.renthouse.adt.PilhaItem;
 import com.renthouse.renthouse.dtos.requisicoes.ItemDto;
-import com.renthouse.renthouse.dtos.requisicoes.ListaObjDto;
+import com.renthouse.renthouse.adt.ListaObjDto;
 import com.renthouse.renthouse.dtos.respostas.ItensCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
 import com.renthouse.renthouse.excecao.ItemNaoExiste;
+import com.renthouse.renthouse.excecao.ItemPilhaNaoExiste;
 import com.renthouse.renthouse.excecao.LimiteItensAtingido;
 import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
 import com.renthouse.renthouse.models.ItemModel;
-import com.renthouse.renthouse.models.UsuarioModel;
 import com.renthouse.renthouse.services.ItemService;
 import com.renthouse.renthouse.services.UsuarioService;
 import org.springframework.beans.BeanUtils;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -34,6 +34,9 @@ public class ItemController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    private PilhaItem pilhaItem = new PilhaItem(10);
+
 
     private ListaObjDto<ItemModel> itensVetor = new ListaObjDto<>(50);
 
@@ -180,12 +183,29 @@ public class ItemController {
     @DeleteMapping("/{idItem}")
     public ResponseEntity<UUID> deletaItem(@PathVariable UUID idItem) {
         if (!itemService.findById(idItem).isEmpty()) {
+            pilhaItem.push(itemService.findById(idItem).get());
             itemService.delete(itemService.findById(idItem).get());
             return ResponseEntity.status(200).body(idItem);
         }
-        throw new ItemNaoExiste();
+        throw new ItemPilhaNaoExiste();
     }
 
+    @PutMapping("/desfazer-exclusao")
+    public void desfazerExclusao() {
+
+        if (pilhaItem.isEmpty()){
+            throw new ItemPilhaNaoExiste();
+        }
+
+        if (itensVetor.getTamanho() >= 50) {
+            throw new LimiteItensAtingido();
+        }
+
+        itemService.save(pilhaItem.get());
+        pilhaItem.pop();
+    }
+
+    @PostMapping("/atualiza-vetor")
     public void atualizaVetor(UUID idUsuario) {
         itensVetor.limpa();
         List<ItemModel> itens = itemService.getItensDeUsuarioVetor(idUsuario);
@@ -194,4 +214,5 @@ public class ItemController {
             itensVetor.adiciona(itemDaVez);
         }
     }
+
 }
