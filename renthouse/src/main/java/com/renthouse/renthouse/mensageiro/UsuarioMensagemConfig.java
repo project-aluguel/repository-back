@@ -1,4 +1,4 @@
-package com.renthouse.renthouse.excecao.mensageiro;
+package com.renthouse.renthouse.mensageiro;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

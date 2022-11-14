@@ -6,7 +6,6 @@ import com.renthouse.renthouse.excecao.CarteiraUsuarioNaoExiste;
 import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
 import com.renthouse.renthouse.excecao.ValorNegativo;
 import com.renthouse.renthouse.models.CarteiraModel;
-import com.renthouse.renthouse.models.UsuarioModel;
 import com.renthouse.renthouse.services.CarteiraService;
 import com.renthouse.renthouse.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;

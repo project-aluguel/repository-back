@@ -23,4 +23,6 @@ public interface CarteiraRepository extends JpaRepository<CarteiraModel, UUID> {
     boolean existsById(UUID idCarteira);
 
     Optional<CarteiraModel> findById(UUID idCarteira);
+    Optional<CarteiraModel> findByUsuarioModelId(UUID idUsuario);
+
 }

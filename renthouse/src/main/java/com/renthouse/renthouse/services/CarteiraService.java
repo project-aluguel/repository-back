@@ -23,15 +23,19 @@ public class CarteiraService {
         return repository.getCarteria(idUsuario);
     }
 
-    public Boolean existsByIdUsuario(UUID idUsuario){
+    public Boolean existsByIdUsuario(UUID idUsuario) {
         return repository.existsByUsuarioModelId(idUsuario);
     }
 
-    public Boolean existsByIdCarteira(UUID idCarteira){
+    public Boolean existsByIdCarteira(UUID idCarteira) {
         return repository.existsById(idCarteira);
     }
 
-    public Optional<CarteiraModel> buscaCarteiraPorIdCarteira(UUID idCarteira){
+    public Optional<CarteiraModel> buscaCarteiraPorIdCarteira(UUID idCarteira) {
         return repository.findById(idCarteira);
+    }
+
+    public Optional<CarteiraModel> buscaCarteiraPorIdUsuario(UUID idUsuario) {
+        return repository.findByUsuarioModelId(idUsuario);
     }
 }
