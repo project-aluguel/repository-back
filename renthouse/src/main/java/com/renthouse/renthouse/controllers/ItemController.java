@@ -37,7 +37,6 @@ public class ItemController {
 
     private PilhaItem pilhaItem = new PilhaItem(10);
 
-
     private ListaObjDto<ItemModel> itensVetor = new ListaObjDto<>(50);
 
     @PostMapping
@@ -192,20 +191,17 @@ public class ItemController {
 
     @PutMapping("/desfazer-exclusao")
     public void desfazerExclusao() {
-
         if (pilhaItem.isEmpty()){
             throw new ItemPilhaNaoExiste();
         }
-
-        if (itensVetor.getTamanho() >= 50) {
-            throw new LimiteItensAtingido();
-        }
-
-        itemService.save(pilhaItem.get());
-        pilhaItem.pop();
+        itemService.save(pilhaItem.pop());
     }
 
-    @PostMapping("/atualiza-vetor")
+    @GetMapping("/verifica-deletados")
+    public boolean verificaPilha(){
+        return !pilhaItem.isEmpty();
+    }
+
     public void atualizaVetor(UUID idUsuario) {
         itensVetor.limpa();
         List<ItemModel> itens = itemService.getItensDeUsuarioVetor(idUsuario);

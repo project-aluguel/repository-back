@@ -43,10 +43,9 @@ public class PilhaItem {
     }
 
     public ItemModel pop() {
-        if (!isEmpty()) {
+        if (isEmpty()) {
             throw new ItemPilhaNaoExiste();
         }
         return pilha[topo--];
-
     }
 }
