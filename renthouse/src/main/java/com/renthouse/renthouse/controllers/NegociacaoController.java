@@ -54,7 +54,7 @@ public class NegociacaoController {
         if (!verificaSaldo(registroNegociacao.getIdAlugador(), registroNegociacao.getValorEmprestimo())) {
             throw new SaldoInsuficiente();
         }
-        realizaTransacaoNegociação(
+        realizaTransacaoNegociacao(
                 registroNegociacao.getIdProprietario(),
                 registroNegociacao.getIdAlugador(),
                 registroNegociacao.getValorEmprestimo()
@@ -74,7 +74,7 @@ public class NegociacaoController {
         return saldoUsuario > valorNegociacao;
     }
 
-    public void realizaTransacaoNegociação(UUID idProprietario, UUID idAlugador, Double valorNegociacao) {
+    public void realizaTransacaoNegociacao(UUID idProprietario, UUID idAlugador, Double valorNegociacao) {
         CarteiraModel alugador = carteiraService.buscaCarteiraPorIdUsuario(idAlugador).get();
         CarteiraModel proprietario = carteiraService.buscaCarteiraPorIdUsuario(idProprietario).get();
 
