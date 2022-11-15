@@ -182,7 +182,9 @@ public class ItemController {
     @DeleteMapping("/{idItem}")
     public ResponseEntity<UUID> deletaItem(@PathVariable UUID idItem) {
         if (!itemService.findById(idItem).isEmpty()) {
-            pilhaItem.push(itemService.findById(idItem).get());
+            if (!pilhaItem.isFull()) {
+                pilhaItem.push(itemService.findById(idItem).get());
+            }
             itemService.delete(itemService.findById(idItem).get());
             return ResponseEntity.status(200).body(idItem);
         }
@@ -191,14 +193,14 @@ public class ItemController {
 
     @PutMapping("/desfazer-exclusao")
     public void desfazerExclusao() {
-        if (pilhaItem.isEmpty()){
+        if (pilhaItem.isEmpty()) {
             throw new ItemPilhaNaoExiste();
         }
         itemService.save(pilhaItem.pop());
     }
 
     @GetMapping("/verifica-deletados")
-    public boolean verificaPilha(){
+    public boolean verificaPilha() {
         return !pilhaItem.isEmpty();
     }
 
