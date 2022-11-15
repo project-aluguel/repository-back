@@ -4,6 +4,8 @@ import com.renthouse.renthouse.dtos.respostas.DetalheItemCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
 import com.renthouse.renthouse.models.ItemModel;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -47,4 +49,12 @@ public interface ItemRepository extends JpaRepository<ItemModel, UUID> {
             " im.valorGarantia, im.valorItem, im.alugado, im.usuarioModel.id, im.entregaFrete, im.entregaPessoal) " +
             " from ItemModel im where im.id = ?1")
     Optional<DetalheItemCatalogo> getDetalheItem(UUID idItem);
+
+    boolean existsByUsuarioModelId(UUID idUsuario);
+
+    @Query("select new " +
+            " com.renthouse.renthouse.dtos.respostas.ItensCatalogo" +
+            "(im.id, im.nome, im.valorItem, im.imagemUrl) " +
+            " from ItemModel im where im.alugado = false and not im.usuarioModel.id = ?1 order by im.criadoEm")
+    List<ItensCatalogo> getItensRecentesCatalogo(UUID idUsuario, Pageable pageable);
 }

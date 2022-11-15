@@ -178,6 +178,18 @@ public class ItemController {
         return ResponseEntity.status(200).body(itemService.buscaDetalheItem(idItem).get());
     }
 
+    @GetMapping("/catalogo/recente/{idUsuario}")
+    public ResponseEntity<List<ItensCatalogo>> buscaItensRecentesCatalogo(@PathVariable UUID idUsuario) {
+        if (!usuarioService.existsById(idUsuario)) {
+            throw new UsuarioNaoExiste();
+        }
+        List<ItensCatalogo> itensRecentes = itemService.buscaItensRecenteCatalogo(idUsuario);
+        if (itensRecentes.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(itensRecentes);
+    }
+
     @PutMapping("/{idItem}")
     public ResponseEntity<ItemModel> atualizaItem(@PathVariable UUID idItem, @RequestBody ItemDto itemAtualizado) {
         if (!itemService.findById(idItem).isEmpty()) {

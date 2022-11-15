@@ -6,6 +6,8 @@ import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
 import com.renthouse.renthouse.models.ItemModel;
 import com.renthouse.renthouse.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -73,5 +75,14 @@ public class ItemService {
 
     public Optional<DetalheItemCatalogo> buscaDetalheItem(UUID idItem) {
         return itemRepository.getDetalheItem(idItem);
+    }
+
+    public boolean existsByUsuarioId(UUID idUsuario) {
+        return itemRepository.existsByUsuarioModelId(idUsuario);
+    }
+
+    public List<ItensCatalogo> buscaItensRecenteCatalogo(UUID idUsuario) {
+        Pageable pageable = PageRequest.of(0,10);
+        return itemRepository.getItensRecentesCatalogo(idUsuario, pageable);
     }
 }

@@ -1,10 +1,7 @@
 package com.renthouse.renthouse.controllers;
 
 import com.renthouse.renthouse.dtos.requisicoes.RegistroNegociacao;
-import com.renthouse.renthouse.excecao.ItemAlugado;
-import com.renthouse.renthouse.excecao.ItemNaoExiste;
-import com.renthouse.renthouse.excecao.SaldoInsuficiente;
-import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
+import com.renthouse.renthouse.excecao.*;
 import com.renthouse.renthouse.models.CarteiraModel;
 import com.renthouse.renthouse.models.NegociacaoModel;
 import com.renthouse.renthouse.models.UsuarioModel;
@@ -42,8 +39,11 @@ public class NegociacaoController {
     @PostMapping
     public ResponseEntity<UUID> registraNegociacao(@RequestBody RegistroNegociacao registroNegociacao) {
         if (!usuarioService.existsById(registroNegociacao.getIdAlugador())
-                && !usuarioService.existsById(registroNegociacao.getIdProprietario())) {
+                || !usuarioService.existsById(registroNegociacao.getIdProprietario())) {
             throw new UsuarioNaoExiste();
+        }
+        if (!itemService.existsByUsuarioId(registroNegociacao.getIdProprietario())) {
+            throw new ItemNaoPertenceUsuario();
         }
         if (!itemService.existsById(registroNegociacao.getIdItem())) {
             throw new ItemNaoExiste();
