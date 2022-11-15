@@ -1,5 +1,6 @@
 package com.renthouse.renthouse.services;
 
+import com.renthouse.renthouse.dtos.respostas.DetalheItemCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
 import com.renthouse.renthouse.models.ItemModel;
@@ -68,5 +69,9 @@ public class ItemService {
         ItemModel item = findById(idItem).get();
         item.setAlugado(true);
         itemRepository.save(item);
+    }
+
+    public Optional<DetalheItemCatalogo> buscaDetalheItem(UUID idItem) {
+        return itemRepository.getDetalheItem(idItem);
     }
 }

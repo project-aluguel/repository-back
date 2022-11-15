@@ -28,6 +28,9 @@ public class ItemModel implements Serializable {
     private String descricao;
 
     @Column
+    private String imagemUrl;
+
+    @Column
     private String manualUso;
 
     @Column
@@ -84,6 +87,14 @@ public class ItemModel implements Serializable {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public String getImagemUrl() {
+        return imagemUrl;
+    }
+
+    public void setImagemUrl(String imagemUrl) {
+        this.imagemUrl = imagemUrl;
     }
 
     public String getManualUso() {

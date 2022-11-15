@@ -2,56 +2,70 @@ package com.renthouse.renthouse.dtos.respostas;
 
 import java.util.UUID;
 
-public class ItensUsuario {
+public class DetalheItemCatalogo {
 
-    private UUID idItem;
+    private UUID id;
+
     private String nome;
-    private String manualUso;
-    private String descricao;
-    private String imagemUrl;
+
     private String categoria;
-    private Double valorItem;
+
+    private String descricao;
+
+    private String imagemUrl;
+
+    private String manualUso;
+
     private Double valorGarantia;
+
+    private Double valorItem;
+
     private Boolean alugado;
+
+    private UUID idProprietario;
+
     private Boolean entregaFrete;
+
     private Boolean entregaPessoal;
 
-    public ItensUsuario(
-            UUID idItem,
+    public DetalheItemCatalogo(
+            UUID id,
             String nome,
-            String manualUso,
+            String categoria,
             String descricao,
             String imagemUrl,
-            String categoria,
-            Double valorItem,
+            String manualUso,
             Double valorGarantia,
+            Double valorItem,
             Boolean alugado,
+            UUID idProprietario,
             Boolean entregaFrete,
             Boolean entregaPessoal
     ) {
-        this.idItem = idItem;
+        this.id = id;
         this.nome = nome;
-        this.manualUso = manualUso;
+        this.categoria = categoria;
         this.descricao = descricao;
         this.imagemUrl = imagemUrl;
-        this.categoria = categoria;
-        this.valorItem = valorItem;
+        this.manualUso = manualUso;
         this.valorGarantia = valorGarantia;
+        this.valorItem = valorItem;
         this.alugado = alugado;
+        this.idProprietario = idProprietario;
         this.entregaFrete = entregaFrete;
         this.entregaPessoal = entregaPessoal;
     }
 
-    public UUID getIdItem() {
-        return idItem;
+    public UUID getId() {
+        return id;
     }
 
     public String getNome() {
         return nome;
     }
 
-    public String getManualUso() {
-        return manualUso;
+    public String getCategoria() {
+        return categoria;
     }
 
     public String getDescricao() {
@@ -62,20 +76,24 @@ public class ItensUsuario {
         return imagemUrl;
     }
 
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public Double getValorItem() {
-        return valorItem;
+    public String getManualUso() {
+        return manualUso;
     }
 
     public Double getValorGarantia() {
         return valorGarantia;
     }
 
+    public Double getValorItem() {
+        return valorItem;
+    }
+
     public Boolean getAlugado() {
         return alugado;
+    }
+
+    public UUID getIdProprietario() {
+        return idProprietario;
     }
 
     public Boolean getEntregaFrete() {
@@ -85,4 +103,6 @@ public class ItensUsuario {
     public Boolean getEntregaPessoal() {
         return entregaPessoal;
     }
+
 }
+

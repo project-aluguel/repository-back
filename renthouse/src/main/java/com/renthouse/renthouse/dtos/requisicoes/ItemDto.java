@@ -15,6 +15,8 @@ public class ItemDto {
 
     private String descricao;
 
+    private String imagemUrl;
+
     private String manualUso;
 
     private Double valorGarantia;
@@ -39,6 +41,10 @@ public class ItemDto {
 
     public String getDescricao() {
         return descricao;
+    }
+
+    public String getImagemUrl() {
+        return imagemUrl;
     }
 
     public String getManualUso() {

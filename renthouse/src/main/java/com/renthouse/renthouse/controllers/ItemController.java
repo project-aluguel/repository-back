@@ -3,6 +3,7 @@ package com.renthouse.renthouse.controllers;
 import com.renthouse.renthouse.adt.PilhaItem;
 import com.renthouse.renthouse.dtos.requisicoes.ItemDto;
 import com.renthouse.renthouse.adt.ListaObjDto;
+import com.renthouse.renthouse.dtos.respostas.DetalheItemCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
 import com.renthouse.renthouse.excecao.ItemNaoExiste;
@@ -164,6 +165,17 @@ public class ItemController {
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(200).body(listaItens);
+    }
+
+    @GetMapping("/catalogo/item/{idItem}")
+    public ResponseEntity<DetalheItemCatalogo> buscaDetalhesDoItem(
+            @PathVariable
+            UUID idItem
+    ) {
+        if (!itemService.existsById(idItem)) {
+            throw new ItemNaoExiste();
+        }
+        return ResponseEntity.status(200).body(itemService.buscaDetalheItem(idItem).get());
     }
 
     @PutMapping("/{idItem}")
