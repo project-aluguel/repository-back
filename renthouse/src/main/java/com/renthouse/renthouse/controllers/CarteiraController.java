@@ -41,7 +41,7 @@ public class CarteiraController {
         return ResponseEntity.status(201).body(carteiraModel.getCarteiraId());
     }
 
-    @GetMapping("{idUsuario}")
+    @GetMapping("/{idUsuario}")
     public ResponseEntity<CarteiraUsuario> buscaCarteira(@PathVariable UUID idUsuario) {
         if (!carteiraService.existsByIdUsuario(idUsuario)) {
             throw new CarteiraUsuarioNaoExiste();
@@ -49,7 +49,7 @@ public class CarteiraController {
         return ResponseEntity.status(200).body(carteiraService.buscaCarteira(idUsuario));
     }
 
-    @PutMapping("{idCarteira}")
+    @PutMapping("/{idCarteira}")
     public ResponseEntity<CarteiraUsuario> atualizaCarteira(
             @PathVariable UUID idCarteira,
             @RequestBody RecargaCarteira recargaCarteira
