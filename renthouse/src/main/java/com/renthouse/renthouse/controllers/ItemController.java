@@ -215,7 +215,7 @@ public class ItemController {
         throw new ItemPilhaNaoExiste();
     }
 
-    @PutMapping("/desfazer-exclusao")
+    @PostMapping("/desfazer-exclusao")
     public void desfazerExclusao() {
         if (pilhaItem.isEmpty()) {
             throw new ItemPilhaNaoExiste();
