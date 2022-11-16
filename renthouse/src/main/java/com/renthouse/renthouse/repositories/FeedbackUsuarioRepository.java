@@ -17,6 +17,10 @@ public interface FeedbackUsuarioRepository extends JpaRepository<FeedbackItemMod
     Optional<Double> getMediaFeedbackItem(int idUsuarioModel);
 
     @Query("SELECT avg(fum.nota) FROM FeedbackUsuarioModel fum WHERE " +
+            " fum.usuarioModel.id = ?1")
+    Optional<Double> getMediaAvaliacoes(int idUsuarioModel);
+
+    @Query("SELECT avg(fum.nota) FROM FeedbackUsuarioModel fum WHERE " +
             " fum.usuarioModel.id = ?1 AND fum.dataHoraAvaliacao >= ?2 ")
     Optional<Double> getMediaAvaliacoes(int idUsuarioModel, LocalDateTime aPartirDe);
 
