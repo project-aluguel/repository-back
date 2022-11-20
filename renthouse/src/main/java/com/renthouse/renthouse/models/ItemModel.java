@@ -1,9 +1,11 @@
 package com.renthouse.renthouse.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -32,6 +34,12 @@ public class ItemModel implements Serializable {
 
     @Column
     private String manualUso;
+
+    @Column
+    private LocalDate dataInicio;
+
+    @Column
+    private LocalDate dataFim;
 
     @Column
     private Double valorGarantia;
@@ -103,6 +111,22 @@ public class ItemModel implements Serializable {
 
     public void setManualUso(String manualUso) {
         this.manualUso = manualUso;
+    }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public void setDataInicio(LocalDate dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+
+    public LocalDate getDataFim() {
+        return dataFim;
+    }
+
+    public void setDataFim(LocalDate dataFim) {
+        this.dataFim = dataFim;
     }
 
     public Double getValorGarantia() {

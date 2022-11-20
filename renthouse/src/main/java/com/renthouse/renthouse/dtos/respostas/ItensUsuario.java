@@ -1,5 +1,8 @@
 package com.renthouse.renthouse.dtos.respostas;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class ItensUsuario {
@@ -7,6 +10,11 @@ public class ItensUsuario {
     private UUID idItem;
     private String nome;
     private String manualUso;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate dataInicio;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate dataFim;
     private String descricao;
     private String imagemUrl;
     private String categoria;
@@ -20,6 +28,8 @@ public class ItensUsuario {
             UUID idItem,
             String nome,
             String manualUso,
+            LocalDate dataInicio,
+            LocalDate dataFim,
             String descricao,
             String imagemUrl,
             String categoria,
@@ -32,6 +42,8 @@ public class ItensUsuario {
         this.idItem = idItem;
         this.nome = nome;
         this.manualUso = manualUso;
+        this.dataInicio = dataInicio;
+        this.dataFim = dataFim;
         this.descricao = descricao;
         this.imagemUrl = imagemUrl;
         this.categoria = categoria;
@@ -52,6 +64,14 @@ public class ItensUsuario {
 
     public String getManualUso() {
         return manualUso;
+    }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public LocalDate getDataFim() {
+        return dataFim;
     }
 
     public String getDescricao() {

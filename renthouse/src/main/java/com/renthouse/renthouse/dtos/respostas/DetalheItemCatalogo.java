@@ -1,5 +1,8 @@
 package com.renthouse.renthouse.dtos.respostas;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class DetalheItemCatalogo {
@@ -15,6 +18,11 @@ public class DetalheItemCatalogo {
     private String imagemUrl;
 
     private String manualUso;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate dataInicio;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate dataFim;
 
     private Double valorGarantia;
 
@@ -35,6 +43,8 @@ public class DetalheItemCatalogo {
             String descricao,
             String imagemUrl,
             String manualUso,
+            LocalDate dataInicio,
+            LocalDate dataFim,
             Double valorGarantia,
             Double valorItem,
             Boolean alugado,
@@ -48,6 +58,8 @@ public class DetalheItemCatalogo {
         this.descricao = descricao;
         this.imagemUrl = imagemUrl;
         this.manualUso = manualUso;
+        this.dataInicio = dataInicio;
+        this.dataFim = dataFim;
         this.valorGarantia = valorGarantia;
         this.valorItem = valorItem;
         this.alugado = alugado;
@@ -78,6 +90,14 @@ public class DetalheItemCatalogo {
 
     public String getManualUso() {
         return manualUso;
+    }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public LocalDate getDataFim() {
+        return dataFim;
     }
 
     public Double getValorGarantia() {

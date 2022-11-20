@@ -7,9 +7,9 @@ import java.util.UUID;
 
 public class RegistroNegociacao {
 
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate dataInicio;
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate dataFim;
 
     private Double valorEmprestimo;

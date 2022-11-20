@@ -14,7 +14,7 @@ public class UsuarioDto {
     @NotBlank
     private String nomeCompleto;
     @NotBlank
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate dataNascimento;
     @NotBlank
     private String cpf;

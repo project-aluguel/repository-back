@@ -1,8 +1,11 @@
 package com.renthouse.renthouse.dtos.requisicoes;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.awt.image.BufferedImage;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.UUID;
@@ -18,6 +21,12 @@ public class ItemDto {
     private String imagemUrl;
 
     private String manualUso;
+
+    @JsonFormat(pattern = "yyyy/MM/dd")
+    private LocalDate dataInicio;
+
+    @JsonFormat(pattern = "yyyy/MM/dd")
+    private LocalDate dataFim;
 
     private Double valorGarantia;
 
@@ -49,6 +58,14 @@ public class ItemDto {
 
     public String getManualUso() {
         return manualUso;
+    }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public LocalDate getDataFim() {
+        return dataFim;
     }
 
     public Double getValorGarantia() {
