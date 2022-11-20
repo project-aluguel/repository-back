@@ -39,9 +39,8 @@ public class FeedbackController {
     private NegociacaoService negociacaoService;
 
     @PostMapping
-    public ResponseEntity<FeedbackModel> registraFeedback(@RequestBody @Valid FeedbackDto requisicao) {
+    public ResponseEntity<UUID> registraFeedback(@RequestBody @Valid FeedbackDto requisicao) {
         if (!negociacaoService.existsById(requisicao.getIdNegociacao())) {
-            System.out.println(negociacaoService.existsById(requisicao.getIdNegociacao()));
             throw new NegociacaoNaoExiste();
         }
         if (!usuarioService.existsById(requisicao.getIdAvaliador())
@@ -66,9 +65,10 @@ public class FeedbackController {
         }
         FeedbackModel novoFeedback = new FeedbackModel();
         BeanUtils.copyProperties(requisicao, novoFeedback);
+        novoFeedback.setIdNegociacao(negociacaoService.buscaPorId(requisicao.getIdNegociacao()).get());
         novoFeedback.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
         feedbackService.save(novoFeedback);
-        return ResponseEntity.status(201).body(novoFeedback);
+        return ResponseEntity.status(201).body(novoFeedback.getId());
     }
 
     @GetMapping("/usuario/{idUsuario}")
@@ -84,7 +84,6 @@ public class FeedbackController {
         if (!itemService.existsById(idItem)) {
             throw new ItemNaoExiste();
         }
-        System.out.println(feedbackService.buscarFeedbacksItem(idItem));
         return ResponseEntity.status(200).body(feedbackService.buscarFeedbacksItem(idItem));
     }
 

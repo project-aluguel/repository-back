@@ -5,6 +5,7 @@ import com.renthouse.renthouse.repositories.NegociacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,15 +28,13 @@ public class NegociacaoService {
             UUID idItem
     ) {
         NegociacaoModel negociacaoVeridica = negociacaoRepository.findById(idNegociacao).get();
-        System.out.println("-".repeat(50));
-        System.out.println("idNegociacao: " + negociacaoRepository.existsById(idNegociacao));
-        System.out.println(negociacaoVeridica.getIdProprietario().getId() == idProprietario);
-        System.out.println(negociacaoVeridica.getIdItem().getId().equals(idItem));
-        System.out.println(negociacaoVeridica.getIdAlugador().getId() == idAlugador);
-        System.out.println("-".repeat(50));
         return negociacaoVeridica.getIdProprietario().getId().equals(idProprietario)
                 && negociacaoVeridica.getIdItem().getId().equals(idItem)
                 && negociacaoVeridica.getIdAlugador().getId().equals(idAlugador);
+    }
+
+    public Optional<NegociacaoModel> buscaPorId(UUID idNegociacao) {
+        return negociacaoRepository.findById(idNegociacao);
     }
 
 }

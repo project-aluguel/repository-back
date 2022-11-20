@@ -21,8 +21,8 @@ public class FeedbackModel implements Serializable {
     @Column
     private Double notaProduto;
 
-    @Column
-    private UUID idNegociacao;
+    @OneToOne
+    private NegociacaoModel idNegociacao;
 
     @Column(length = 16)
     private UUID idProprietario;
@@ -64,11 +64,11 @@ public class FeedbackModel implements Serializable {
         this.notaProduto = notaProduto;
     }
 
-    public UUID getIdNegociacao() {
+    public NegociacaoModel getIdNegociacao() {
         return idNegociacao;
     }
 
-    public void setIdNegociacao(UUID idNegociacao) {
+    public void setIdNegociacao(NegociacaoModel idNegociacao) {
         this.idNegociacao = idNegociacao;
     }
 
