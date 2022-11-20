@@ -9,7 +9,7 @@ public class FeedbackDto {
     private UUID idAvaliador;
     private UUID idItem;
     private Double notaProprietario;
-    private Double notaItem;
+    private Double notaProduto;
 
     public UUID getIdNegociacao() {
         return idNegociacao;
@@ -31,7 +31,7 @@ public class FeedbackDto {
         return notaProprietario;
     }
 
-    public Double getNotaItem() {
-        return notaItem;
+    public Double getNotaProduto() {
+        return notaProduto;
     }
 }

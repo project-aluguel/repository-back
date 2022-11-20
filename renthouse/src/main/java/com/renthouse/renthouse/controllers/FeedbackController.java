@@ -5,7 +5,6 @@ import com.renthouse.renthouse.dtos.respostas.FeedbacksItem;
 import com.renthouse.renthouse.dtos.respostas.FeedbacksUsuario;
 import com.renthouse.renthouse.excecao.*;
 import com.renthouse.renthouse.models.FeedbackModel;
-import com.renthouse.renthouse.models.NegociacaoModel;
 import com.renthouse.renthouse.services.FeedbackService;
 import com.renthouse.renthouse.services.ItemService;
 import com.renthouse.renthouse.services.NegociacaoService;
@@ -19,6 +18,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -39,8 +39,9 @@ public class FeedbackController {
     private NegociacaoService negociacaoService;
 
     @PostMapping
-    public ResponseEntity<UUID> registraFeedback(@RequestBody @Valid FeedbackDto requisicao) {
+    public ResponseEntity<FeedbackModel> registraFeedback(@RequestBody @Valid FeedbackDto requisicao) {
         if (!negociacaoService.existsById(requisicao.getIdNegociacao())) {
+            System.out.println(negociacaoService.existsById(requisicao.getIdNegociacao()));
             throw new NegociacaoNaoExiste();
         }
         if (!usuarioService.existsById(requisicao.getIdAvaliador())
@@ -60,14 +61,14 @@ public class FeedbackController {
         ) {
             throw new NegociacaoIncoerente();
         }
-        if (requisicao.getNotaItem() < 1.0 || requisicao.getNotaProprietario() > 5.0) {
+        if (requisicao.getNotaProduto() < 1.0 || requisicao.getNotaProprietario() > 5.0) {
             throw new NotaFeedbackInvalida();
         }
         FeedbackModel novoFeedback = new FeedbackModel();
         BeanUtils.copyProperties(requisicao, novoFeedback);
         novoFeedback.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
         feedbackService.save(novoFeedback);
-        return ResponseEntity.status(201).body(novoFeedback.getId());
+        return ResponseEntity.status(201).body(novoFeedback);
     }
 
     @GetMapping("/usuario/{idUsuario}")
@@ -76,6 +77,20 @@ public class FeedbackController {
             throw new UsuarioNaoExiste();
         }
         return ResponseEntity.status(200).body(feedbackService.buscarFeedbacksUsuario(idUsuario));
+    }
+
+    @GetMapping("/item/{idItem}")
+    public ResponseEntity<FeedbacksItem> buscarFeedbacksItem(@PathVariable UUID idItem) {
+        if (!itemService.existsById(idItem)) {
+            throw new ItemNaoExiste();
+        }
+        System.out.println(feedbackService.buscarFeedbacksItem(idItem));
+        return ResponseEntity.status(200).body(feedbackService.buscarFeedbacksItem(idItem));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FeedbackModel>> getAll() {
+        return ResponseEntity.status(200).body(feedbackService.findAll());
     }
 
 }
