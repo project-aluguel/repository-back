@@ -2,6 +2,7 @@ package com.renthouse.renthouse.controllers;
 
 import com.renthouse.renthouse.dtos.requisicoes.RecargaCarteira;
 import com.renthouse.renthouse.dtos.respostas.CarteiraUsuario;
+import com.renthouse.renthouse.excecao.CarteiraConflito;
 import com.renthouse.renthouse.excecao.CarteiraUsuarioNaoExiste;
 import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
 import com.renthouse.renthouse.excecao.ValorNegativo;
@@ -32,6 +33,9 @@ public class CarteiraController {
     public ResponseEntity<UUID> criaCarteira(@PathVariable UUID idUsuario) {
         if (usuarioService.findById(idUsuario).isEmpty()) {
             throw new UsuarioNaoExiste();
+        }
+        if (carteiraService.existsByIdUsuario(idUsuario)){
+            throw new CarteiraConflito();
         }
         CarteiraModel carteiraModel = new CarteiraModel();
         carteiraModel.setUsuarioModel(usuarioService.findById(idUsuario).get());

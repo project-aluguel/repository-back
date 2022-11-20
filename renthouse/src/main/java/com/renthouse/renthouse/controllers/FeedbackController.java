@@ -1,9 +1,11 @@
 package com.renthouse.renthouse.controllers;
 
+import com.renthouse.renthouse.dtos.requisicoes.FeedbackDto;
 import com.renthouse.renthouse.dtos.respostas.FeedbacksItem;
 import com.renthouse.renthouse.dtos.respostas.FeedbacksUsuario;
 import com.renthouse.renthouse.excecao.*;
 import com.renthouse.renthouse.models.FeedbackModel;
+import com.renthouse.renthouse.models.NegociacaoModel;
 import com.renthouse.renthouse.services.FeedbackService;
 import com.renthouse.renthouse.services.ItemService;
 import com.renthouse.renthouse.services.NegociacaoService;
@@ -14,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @RestController
@@ -23,63 +27,55 @@ import java.util.UUID;
 public class FeedbackController {
 
     @Autowired
-    FeedbackService feedbackService;
+    private FeedbackService feedbackService;
 
     @Autowired
-    ItemService itemService;
+    private ItemService itemService;
 
     @Autowired
-    UsuarioService usuarioService;
+    private UsuarioService usuarioService;
 
     @Autowired
-    NegociacaoService negociacaoService;
+    private NegociacaoService negociacaoService;
 
     @PostMapping
-    public ResponseEntity<FeedbackModel> registraFeedback(@RequestBody @Valid FeedbackModel feedbackModel){
-        if (!usuarioService.existsById(feedbackModel.getAvaliadorId().getId())
-                || !usuarioService.existsById(feedbackModel.getProprietarioId().getId())) {
+    public ResponseEntity<UUID> registraFeedback(@RequestBody @Valid FeedbackDto requisicao) {
+        if (!negociacaoService.existsById(requisicao.getIdNegociacao())) {
+            throw new NegociacaoNaoExiste();
+        }
+        if (!usuarioService.existsById(requisicao.getIdAvaliador())
+                || !usuarioService.existsById(requisicao.getIdProprietario())) {
             throw new UsuarioNaoExiste();
         }
-        if (!itemService.existsByUsuarioId(feedbackModel.getProprietarioId().getId())) {
-            throw new ItemNaoPertenceUsuario();
-        }
-        if (!itemService.existsById(feedbackModel.getItemId().getId())) {
+        if (!itemService.existsById(requisicao.getIdItem())) {
             throw new ItemNaoExiste();
         }
-        if (itemService.isAlugado(feedbackModel.getItemId().getId())) {
-            throw new ItemAlugado();
+        if (!negociacaoService
+                .negociacaoEhVeridica(
+                        requisicao.getIdNegociacao(),
+                        requisicao.getIdProprietario(),
+                        requisicao.getIdAvaliador(),
+                        requisicao.getIdItem()
+                )
+        ) {
+            throw new NegociacaoIncoerente();
+        }
+        if (requisicao.getNotaItem() < 1.0 || requisicao.getNotaProprietario() > 5.0) {
+            throw new NotaFeedbackInvalida();
         }
         FeedbackModel novoFeedback = new FeedbackModel();
-        BeanUtils.copyProperties(feedbackModel, novoFeedback);
-        novoFeedback.setItemId(itemService.findById(feedbackModel.getItemId().getId()).get());
-        novoFeedback.setProprietarioId(usuarioService.findById(feedbackModel.getProprietarioId().getId()).get());
-        novoFeedback.setAvaliadorId(usuarioService.findById(feedbackModel.getAvaliadorId().getId()).get());
-
-        return ResponseEntity.status(201).body(feedbackService.save(novoFeedback));
+        BeanUtils.copyProperties(requisicao, novoFeedback);
+        novoFeedback.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+        feedbackService.save(novoFeedback);
+        return ResponseEntity.status(201).body(novoFeedback.getId());
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<FeedbacksUsuario> buscarMediaFeedbackUsuario(@PathVariable UUID idUsuario) {
+    public ResponseEntity<FeedbacksUsuario> buscarFeedbacksUsuario(@PathVariable UUID idUsuario) {
         if (!usuarioService.existsById(idUsuario)) {
             throw new UsuarioNaoExiste();
         }
-        FeedbacksUsuario novoFeedback = new FeedbacksUsuario();
-        novoFeedback.setIdFeedbackUsuario(idUsuario);
-        novoFeedback.setNotaMediaUsuario(feedbackService.getMediaAvaliacoesUsuario(idUsuario));
-        novoFeedback.setTotalAvaliacoes(feedbackService.getTotalAvaliacoesUsuario(idUsuario));
-        return ResponseEntity.status(200).body(novoFeedback);
-    }
-
-    @GetMapping("/item/{idItem}")
-    public ResponseEntity<FeedbacksItem> buscarMediaFeedbackItem(@PathVariable UUID idItem) {
-        if (!itemService.existsById(idItem)) {
-            throw new ItemNaoExiste();
-        }
-        FeedbacksItem novoFeedback = new FeedbacksItem();
-        novoFeedback.setIdFeedbackItem(idItem);
-        novoFeedback.setNotaMediaItem(feedbackService.getMediaAvaliacoesItem(idItem));
-        novoFeedback.setTotalAvaliacoes(feedbackService.getTotalAvaliacoesItem(idItem));
-        return ResponseEntity.status(200).body(novoFeedback);
+        return ResponseEntity.status(200).body(feedbackService.buscarFeedbacksUsuario(idUsuario));
     }
 
 }

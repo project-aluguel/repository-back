@@ -8,4 +8,7 @@ import java.util.UUID;
 
 @Repository
 public interface NegociacaoRepository extends JpaRepository<NegociacaoModel, UUID> {
+
+    boolean existsById(UUID idNegociacao);
+
 }

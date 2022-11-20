@@ -4,7 +4,6 @@ import com.renthouse.renthouse.dtos.requisicoes.RegistroNegociacao;
 import com.renthouse.renthouse.excecao.*;
 import com.renthouse.renthouse.models.CarteiraModel;
 import com.renthouse.renthouse.models.NegociacaoModel;
-import com.renthouse.renthouse.models.UsuarioModel;
 import com.renthouse.renthouse.services.CarteiraService;
 import com.renthouse.renthouse.services.ItemService;
 import com.renthouse.renthouse.services.NegociacaoService;
@@ -71,7 +70,7 @@ public class NegociacaoController {
 
     public boolean verificaSaldo(UUID idAlugador, Double valorNegociacao) {
         Double saldoUsuario = carteiraService.buscaCarteira(idAlugador).getSaldoCarteira();
-        return saldoUsuario > valorNegociacao;
+        return saldoUsuario >= valorNegociacao;
     }
 
     public void realizaTransacaoNegociacao(UUID idProprietario, UUID idAlugador, Double valorNegociacao) {

@@ -5,7 +5,7 @@ import com.renthouse.renthouse.repositories.NegociacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import java.util.UUID;
 
 @Service
 public class NegociacaoService {
@@ -14,6 +14,22 @@ public class NegociacaoService {
 
     public NegociacaoModel save(NegociacaoModel negociacaoModel) {
         return negociacaoRepository.save(negociacaoModel);
+    }
+
+    public boolean existsById(UUID idNegociacao) {
+        return negociacaoRepository.existsById(idNegociacao);
+    }
+
+    public boolean negociacaoEhVeridica(
+            UUID idNegociacao,
+            UUID idProprietario,
+            UUID idAlugador,
+            UUID idItem
+    ) {
+        NegociacaoModel negociacaoVeridica = negociacaoRepository.findById(idNegociacao).get();
+        return negociacaoVeridica.getIdProprietario().getId() == idProprietario
+                && negociacaoVeridica.getIdItem().getId() == idItem
+                && negociacaoVeridica.getIdAlugador().getId() == idAlugador;
     }
 
 }

@@ -2,10 +2,11 @@ package com.renthouse.renthouse.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_feedback")
+@Table(name = "tb_feedbacks")
 public class FeedbackModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,13 +22,23 @@ public class FeedbackModel implements Serializable {
     private Double notaProduto;
 
     @OneToOne
-    private UUID negociacaoId;
+    private NegociacaoModel idNegociacao;
 
-    private UsuarioModel avaliadorId;
+    @Column(length = 16)
+    private UUID idProprietario;
 
-    private UsuarioModel proprietarioId;
+    @Column(length = 16)
+    private UUID idAvaliador;
 
-    private ItemModel itemId;
+    @Column(length = 16)
+    private UUID idItem;
+
+    @Column
+    private LocalDateTime criadoEm;
+
+    @Column
+    private LocalDateTime atualizadoEm;
+
 
     public UUID getId() {
         return id;
@@ -53,48 +64,51 @@ public class FeedbackModel implements Serializable {
         this.notaProduto = notaProduto;
     }
 
-    public UUID getNegociacaoId() {
-        return negociacaoId;
+    public NegociacaoModel getIdNegociacao() {
+        return idNegociacao;
     }
 
-    public void setNegociacaoId(UUID negociacaoId) {
-        this.negociacaoId = negociacaoId;
+    public void setIdNegociacao(NegociacaoModel idNegociacao) {
+        this.idNegociacao = idNegociacao;
     }
 
-    public UsuarioModel getAvaliadorId() {
-        return avaliadorId;
+    public UUID getIdProprietario() {
+        return idProprietario;
     }
 
-    public void setAvaliadorId(UsuarioModel avaliadorId) {
-        this.avaliadorId = avaliadorId;
+    public void setIdProprietario(UUID idProprietario) {
+        this.idProprietario = idProprietario;
     }
 
-    public UsuarioModel getProprietarioId() {
-        return proprietarioId;
+    public UUID getIdAvaliador() {
+        return idAvaliador;
     }
 
-    public void setProprietarioId(UsuarioModel proprietarioId) {
-        this.proprietarioId = proprietarioId;
+    public void setIdAvaliador(UUID idAvaliador) {
+        this.idAvaliador = idAvaliador;
     }
 
-    public ItemModel getItemId() {
-        return itemId;
+    public UUID getIdItem() {
+        return idItem;
     }
 
-    public void setItemId(ItemModel itemId) {
-        this.itemId = itemId;
+    public void setIdItem(UUID idItem) {
+        this.idItem = idItem;
     }
 
-    @Override
-    public String toString() {
-        return "FeedbackModel{" +
-                "id=" + id +
-                ", notaProprietario=" + notaProprietario +
-                ", notaProduto=" + notaProduto +
-                ", negociacaoId=" + negociacaoId +
-                ", avaliadorId=" + avaliadorId +
-                ", proprietarioId=" + proprietarioId +
-                ", itemId=" + itemId +
-                '}';
+    public LocalDateTime getCriadoEm() {
+        return criadoEm;
+    }
+
+    public void setCriadoEm(LocalDateTime criadoEm) {
+        this.criadoEm = criadoEm;
+    }
+
+    public LocalDateTime getAtualizadoEm() {
+        return atualizadoEm;
+    }
+
+    public void setAtualizadoEm(LocalDateTime atualizadoEm) {
+        this.atualizadoEm = atualizadoEm;
     }
 }
