@@ -1,5 +1,6 @@
 package com.renthouse.renthouse.controllers;
 
+import com.renthouse.renthouse.adt.FilaObj;
 import com.renthouse.renthouse.adt.PilhaItem;
 import com.renthouse.renthouse.dtos.requisicoes.ItemDto;
 import com.renthouse.renthouse.adt.ListaObjDto;
@@ -37,6 +38,8 @@ public class ItemController {
     private UsuarioService usuarioService;
 
     private PilhaItem pilhaItem = new PilhaItem(10);
+
+    private FilaObj fila = new FilaObj(10);
 
     private ListaObjDto<ItemModel> itensVetor = new ListaObjDto<>(50);
 
@@ -159,6 +162,9 @@ public class ItemController {
             @PathVariable UUID idUsuario,
             @PathVariable String nome
     ) {
+        if (!nome.isBlank() && !fila.isFull()) {
+            fila.insert(nome);
+        }
         nome = nome.toUpperCase();
         List<ItensCatalogo> listaItens = itemService.buscaItensCatalogoPorNome(nome, idUsuario);
         if (listaItens.isEmpty()) {
@@ -223,9 +229,23 @@ public class ItemController {
         itemService.save(pilhaItem.pop());
     }
 
+    @GetMapping("/catalogo/ultimas-buscas")
+    public ResponseEntity<String[]> listaUltimasBuscas() {
+        if (!fila.isEmpty()) {
+            return ResponseEntity.status(200).body(fila.getFila());
+        }
+        return ResponseEntity.status(204).build();
+    }
+
+
     @GetMapping("/verifica-deletados")
     public boolean verificaPilha() {
         return !pilhaItem.isEmpty();
+    }
+
+    @GetMapping("/verifica-buscas")
+    public boolean verificaFila() {
+        return !fila.isEmpty();
     }
 
     public void atualizaVetor(UUID idUsuario) {
