@@ -1,6 +1,7 @@
 package com.renthouse.renthouse.controllers;
 
 import com.renthouse.renthouse.dtos.requisicoes.RegistroNegociacao;
+import com.renthouse.renthouse.dtos.respostas.NegociacoesUsuario;
 import com.renthouse.renthouse.excecao.*;
 import com.renthouse.renthouse.models.CarteiraModel;
 import com.renthouse.renthouse.models.NegociacaoModel;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -66,6 +69,21 @@ public class NegociacaoController {
         negociacaoModel.setIdAlugador(usuarioService.findById(registroNegociacao.getIdAlugador()).get());
         negociacaoModel.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
         return ResponseEntity.status(201).body(negociacaoService.save(negociacaoModel).getId());
+    }
+
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<Optional<NegociacoesUsuario>> buscaNegociacoesUsuario(@PathVariable UUID idUsuario) {
+        if (!usuarioService.existsById(idUsuario)) {
+            throw new UsuarioNaoExiste();
+        }
+
+        Optional<NegociacoesUsuario> negociacoesUsuarios = negociacaoService.buscaNegociacoesUsuario(idUsuario);
+
+        if (!negociacoesUsuarios.isEmpty()) {
+            return ResponseEntity.status(200).body(negociacoesUsuarios);
+        }
+
+        return ResponseEntity.status(204).build();
     }
 
     public boolean verificaSaldo(UUID idAlugador, Double valorNegociacao) {

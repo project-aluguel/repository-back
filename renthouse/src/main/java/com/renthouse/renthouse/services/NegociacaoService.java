@@ -1,10 +1,12 @@
 package com.renthouse.renthouse.services;
 
+import com.renthouse.renthouse.dtos.respostas.NegociacoesUsuario;
 import com.renthouse.renthouse.models.NegociacaoModel;
 import com.renthouse.renthouse.repositories.NegociacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,6 +37,10 @@ public class NegociacaoService {
 
     public Optional<NegociacaoModel> buscaPorId(UUID idNegociacao) {
         return negociacaoRepository.findById(idNegociacao);
+    }
+
+    public Optional<NegociacoesUsuario> buscaNegociacoesUsuario(UUID idUsuario) {
+        return negociacaoRepository.getNegociacoesUsuario(idUsuario);
     }
 
 }
