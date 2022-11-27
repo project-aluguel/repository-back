@@ -26,13 +26,13 @@ public class ItemModel implements Serializable {
     @Column
     private String categoria;
 
-    @Column
+    @Column(length = 300)
     private String descricao;
 
     @Column
     private String imagemUrl;
 
-    @Column
+    @Column(length = 300)
     private String manualUso;
 
     @Column

@@ -7,10 +7,7 @@ import com.renthouse.renthouse.adt.ListaObjDto;
 import com.renthouse.renthouse.dtos.respostas.DetalheItemCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensCatalogo;
 import com.renthouse.renthouse.dtos.respostas.ItensUsuario;
-import com.renthouse.renthouse.excecao.ItemNaoExiste;
-import com.renthouse.renthouse.excecao.ItemPilhaNaoExiste;
-import com.renthouse.renthouse.excecao.LimiteItensAtingido;
-import com.renthouse.renthouse.excecao.UsuarioNaoExiste;
+import com.renthouse.renthouse.excecao.*;
 import com.renthouse.renthouse.models.ItemModel;
 import com.renthouse.renthouse.services.ItemService;
 import com.renthouse.renthouse.services.UsuarioService;
@@ -19,10 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -255,6 +253,53 @@ public class ItemController {
                 itens) {
             itensVetor.adiciona(itemDaVez);
         }
+    }
+
+    @PostMapping(value = "/arquivo-txt/{imagemUrl}", consumes = "text/*")
+    public ResponseEntity<UUID> salvaTxt(@RequestBody byte[] fileTxt, @PathVariable String imagemUrl) throws UnsupportedEncodingException {
+
+
+        String itemString = new String(fileTxt, "UTF-8");
+        ItemModel item = new ItemModel();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        if (itemString.length()<893){
+            throw new DocumentoLayoutInvalido();
+        }
+
+        if (!usuarioService.existsById(UUID.fromString(itemString.substring(145, 181)))){
+            throw new UsuarioNaoExiste();
+        }
+
+        String infosArquivo = itemString.substring(1, 144);
+        UUID idUsuario = UUID.fromString(itemString.substring(145, 181));
+        String nome = itemString.substring(181, 213);
+        String descricao = itemString.substring(214, 514);
+        String manualUso = itemString.substring(515, 815);
+        String categoria = itemString.substring(816, 846);
+        Double valorItem = Double.valueOf(itemString.substring(847, 853));
+        Double valorGarantia = Double.valueOf(itemString.substring(854, 860));
+        LocalDate dataInicio = LocalDate.parse(itemString.substring(861, 871), formatter);
+        LocalDate dataFim = LocalDate.parse(itemString.substring(874, 884), formatter);
+        String entregaPessoal = itemString.substring(887, 890);
+        String entregaFrete = itemString.substring(890, 893);
+
+        item.setNome(nome);
+        item.setDescricao(descricao);
+        item.setManualUso(manualUso);
+        item.setCategoria(categoria);
+        item.setValorItem(valorItem);
+        item.setValorGarantia(valorGarantia);
+        item.setDataInicio(dataInicio);
+        item.setDataFim(dataFim);
+        item.setEntregaPessoal(entregaPessoal.equals("SIM"));
+        item.setEntregaFrete(entregaFrete.equals("SIM"));
+        item.setUsuarioModel(usuarioService.findById(idUsuario).get());
+        item.setImagemUrl(imagemUrl);
+        item.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
+        itemService.save(item);
+        return ResponseEntity.status(201).body(item.getId());
+
     }
 
 }
