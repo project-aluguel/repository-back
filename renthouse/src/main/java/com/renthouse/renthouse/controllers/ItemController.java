@@ -315,61 +315,47 @@ public class ItemController {
         return ResponseEntity.status(201).body(itemNovo.getId());
     }
 
-    @GetMapping(value = "/arquivo-txt/{idItem}", produces = "text/*")
-    public ResponseEntity<byte[]> buscaArquivoTxt(@PathVariable UUID idItem)  {
-        if (!itemService.existsById(idItem)) {
+    @GetMapping(value = "/arquivo-txt/{idItemParam}", produces = "text/plain")
+    public ResponseEntity<byte[]> buscaArquivoTxt(@PathVariable UUID idItemParam) {
+        if (!itemService.existsById(idItemParam)) {
             throw new ItemNaoExiste();
         }
 
-        ItemModel item = itemService.findById(idItem).get();
+        ItemModel item = itemService.findById(idItemParam).get();
+        UUID idUsuario = usuarioService.findById(itemService.findById(idItemParam).get().getUsuarioModel().getId()).get().getId();
 
         String
-                nome,
-                categoria,
-                stringao;
+                idProprietario = String.valueOf(idUsuario),
+                nomeProprietario = usuarioService.findById(idUsuario).get().getNomeCompleto(),
+                cpf = usuarioService.findById(idUsuario).get().getCpf(),
+                idItem = String.valueOf(idItemParam),
+                nomeItem = item.getNome(),
+                valorDiario = String.valueOf(item.getValorItem()),
+                valorGarantia = String.valueOf(item.getValorGarantia()),
+                dataInicio = String.valueOf(item.getDataInicio()),
+                dataFim = String.valueOf(item.getDataFim()),
+                entregaPessoal = String.valueOf(item.getEntregaPessoal()),
+                entregaFrete = String.valueOf(item.getEntregaFrete()),
+                arquivoFormatado = "";
 
-        nome = item.getNome();
-        categoria = item.getCategoria();
-        stringao = nome + categoria;
+        arquivoFormatado += idProprietario;
+        arquivoFormatado += nomeProprietario + " ".repeat(30 - nomeProprietario.length());
+        arquivoFormatado += cpf + " ".repeat(20 - cpf.length());
+        arquivoFormatado += idItem;
+        arquivoFormatado += nomeItem + " ".repeat(30 - nomeItem.length());
+        arquivoFormatado += valorDiario + " ".repeat(6 - valorDiario.length());
+        arquivoFormatado += valorGarantia + " ".repeat(6 - valorGarantia.length());
+        arquivoFormatado += dataInicio + " ".repeat(12 - dataInicio.length());
+        arquivoFormatado += dataFim + " ".repeat(12 - dataFim.length());
+        arquivoFormatado += entregaPessoal + " ".repeat(5 - entregaPessoal.length());
+        arquivoFormatado += entregaFrete + " ".repeat(5 - entregaFrete.length());
 
-        byte[] arquivoTxt = stringao.getBytes(StandardCharsets.UTF_8);
+
+        byte[] arquivoTxt = arquivoFormatado.getBytes(StandardCharsets.UTF_8);
 
         return ResponseEntity
                 .status(200)
                 .header("content-disposition", "attachment; filename=\"item.txt\"")
                 .body(arquivoTxt);
-    }
-
-    @GetMapping("/download/{idItem}")
-    public ResponseEntity<File> download(@PathVariable UUID idItem) {
-        //busco o documento pelo título
-
-        File file = new File("item.txt");
-        //adiciono o título como nome do arquivo
-
-        ItemModel item = itemService.findById(idItem).get();
-
-        String
-                nome,
-                categoria,
-                stringao;
-
-        nome = item.getNome();
-        categoria = item.getCategoria();
-        stringao = nome + categoria;
-
-        try (Writer writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write(stringao);
-
-            return ResponseEntity
-                    .status(200)
-                    .header("content-disposition", "attachment; filename=\"item.txt\"")
-                    .body(file);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 }
