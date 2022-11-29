@@ -2,6 +2,7 @@ package com.renthouse.renthouse.controllers;
 
 import com.renthouse.renthouse.adt.FilaObj;
 import com.renthouse.renthouse.adt.PilhaItem;
+import com.renthouse.renthouse.dtos.requisicoes.ImagemUrlDto;
 import com.renthouse.renthouse.dtos.requisicoes.ItemDto;
 import com.renthouse.renthouse.adt.ListaObjDto;
 import com.renthouse.renthouse.dtos.respostas.DetalheItemCatalogo;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -306,10 +308,68 @@ public class ItemController {
     }
 
     @PostMapping("/arquivo-txt/salva-imagem")
-    public ResponseEntity<UUID> salvaImagem(@RequestBody String imagemUrl) {
+    public ResponseEntity<UUID> salvaImagem(@RequestBody ImagemUrlDto imagem) {
         ItemModel itemNovo = new ItemModel();
-        itemNovo.setImagemUrl(imagemUrl);
+        itemNovo.setImagemUrl(imagem.getImagemUrl());
         itemService.save(itemNovo);
         return ResponseEntity.status(201).body(itemNovo.getId());
+    }
+
+    @GetMapping(value = "/arquivo-txt/{idItem}", produces = "text/*")
+    public ResponseEntity<byte[]> buscaArquivoTxt(@PathVariable UUID idItem)  {
+        if (!itemService.existsById(idItem)) {
+            throw new ItemNaoExiste();
+        }
+
+        ItemModel item = itemService.findById(idItem).get();
+
+        String
+                nome,
+                categoria,
+                stringao;
+
+        nome = item.getNome();
+        categoria = item.getCategoria();
+        stringao = nome + categoria;
+
+        byte[] arquivoTxt = stringao.getBytes(StandardCharsets.UTF_8);
+
+        return ResponseEntity
+                .status(200)
+                .header("content-disposition", "attachment; filename=\"item.txt\"")
+                .body(arquivoTxt);
+    }
+
+    @GetMapping("/download/{idItem}")
+    public ResponseEntity<File> download(@PathVariable UUID idItem) {
+        //busco o documento pelo título
+
+        File file = new File("item.txt");
+        //adiciono o título como nome do arquivo
+
+        ItemModel item = itemService.findById(idItem).get();
+
+        String
+                nome,
+                categoria,
+                stringao;
+
+        nome = item.getNome();
+        categoria = item.getCategoria();
+        stringao = nome + categoria;
+
+        try (Writer writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(stringao);
+
+            return ResponseEntity
+                    .status(200)
+                    .header("content-disposition", "attachment; filename=\"item.txt\"")
+                    .body(file);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
