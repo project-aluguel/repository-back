@@ -255,19 +255,23 @@ public class ItemController {
         }
     }
 
-    @PostMapping(value = "/arquivo-txt/{imagemUrl}", consumes = "text/*")
-    public ResponseEntity<UUID> salvaTxt(@RequestBody byte[] fileTxt, @PathVariable String imagemUrl) throws UnsupportedEncodingException {
+    @PostMapping(value = "/arquivo-txt/{idItem}", consumes = "text/*")
+    public ResponseEntity<UUID> salvaTxt(
+            @RequestBody byte[] fileTxt,
+            @PathVariable UUID idItem
+    ) throws UnsupportedEncodingException {
 
 
         String itemString = new String(fileTxt, "UTF-8");
-        ItemModel item = new ItemModel();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        if (itemString.length()<893){
-            throw new DocumentoLayoutInvalido();
+        if (itemService.findById(idItem).isEmpty()) {
+            throw new ItemNaoExiste();
         }
 
-        if (!usuarioService.existsById(UUID.fromString(itemString.substring(145, 181)))){
+        ItemModel item = itemService.findById(idItem).get();
+
+        if (!usuarioService.existsById(UUID.fromString(itemString.substring(145, 181)))) {
             throw new UsuarioNaoExiste();
         }
 
@@ -295,11 +299,17 @@ public class ItemController {
         item.setEntregaPessoal(entregaPessoal.equals("SIM"));
         item.setEntregaFrete(entregaFrete.equals("SIM"));
         item.setUsuarioModel(usuarioService.findById(idUsuario).get());
-        item.setImagemUrl(imagemUrl);
         item.setCriadoEm(LocalDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS));
         itemService.save(item);
         return ResponseEntity.status(201).body(item.getId());
 
     }
 
+    @PostMapping("/arquivo-txt/salva-imagem")
+    public ResponseEntity<UUID> salvaImagem(@RequestBody String imagemUrl) {
+        ItemModel itemNovo = new ItemModel();
+        itemNovo.setImagemUrl(imagemUrl);
+        itemService.save(itemNovo);
+        return ResponseEntity.status(201).body(itemNovo.getId());
+    }
 }

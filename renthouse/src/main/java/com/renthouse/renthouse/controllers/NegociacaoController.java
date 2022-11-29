@@ -72,12 +72,12 @@ public class NegociacaoController {
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<Optional<NegociacoesUsuario>> buscaNegociacoesUsuario(@PathVariable UUID idUsuario) {
+    public ResponseEntity<List<NegociacoesUsuario>> buscaNegociacoesUsuario(@PathVariable UUID idUsuario) {
         if (!usuarioService.existsById(idUsuario)) {
             throw new UsuarioNaoExiste();
         }
 
-        Optional<NegociacoesUsuario> negociacoesUsuarios = negociacaoService.buscaNegociacoesUsuario(idUsuario);
+        List<NegociacoesUsuario> negociacoesUsuarios = negociacaoService.buscaNegociacoesUsuario(idUsuario);
 
         if (!negociacoesUsuarios.isEmpty()) {
             return ResponseEntity.status(200).body(negociacoesUsuarios);

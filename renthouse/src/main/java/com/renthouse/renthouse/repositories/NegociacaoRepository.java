@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +19,6 @@ public interface NegociacaoRepository extends JpaRepository<NegociacaoModel, UUI
             " com.renthouse.renthouse.dtos.respostas.NegociacoesUsuario" +
             "(nm.id, nm.idItem.nome, nm.idItem.valorItem, nm.idItem.imagemUrl, nm.idItem.id, nm.idItem.usuarioModel.id) " +
             " from NegociacaoModel nm where nm.idAlugador.id = ?1")
-    Optional<NegociacoesUsuario> getNegociacoesUsuario(UUID idUsuario);
+    List<NegociacoesUsuario> getNegociacoesUsuario(UUID idUsuario);
 
 }

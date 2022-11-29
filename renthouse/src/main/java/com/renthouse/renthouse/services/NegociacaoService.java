@@ -39,7 +39,7 @@ public class NegociacaoService {
         return negociacaoRepository.findById(idNegociacao);
     }
 
-    public Optional<NegociacoesUsuario> buscaNegociacoesUsuario(UUID idUsuario) {
+    public List<NegociacoesUsuario> buscaNegociacoesUsuario(UUID idUsuario) {
         return negociacaoRepository.getNegociacoesUsuario(idUsuario);
     }
 
