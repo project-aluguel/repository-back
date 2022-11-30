@@ -24,6 +24,8 @@ public class ItensUsuario {
     private Boolean entregaFrete;
     private Boolean entregaPessoal;
 
+    public ItensUsuario() {
+    }
     public ItensUsuario(
             UUID idItem,
             String nome,
