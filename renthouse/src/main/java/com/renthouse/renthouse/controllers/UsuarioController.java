@@ -29,6 +29,8 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    private ItemController itemController;
+
     @PostMapping
     public ResponseEntity<UUID> criaUsuario(@RequestBody UsuarioDto usuarioDto) {
         if (usuarioService.existsByEmail(usuarioDto.getEmail())) {
@@ -87,6 +89,7 @@ public class UsuarioController {
         if (!usuario.isEmpty()) {
             usuario.get().setAutenticado(false);
             usuarioService.save(usuario.get());
+            itemController.limpaSessaoUsuario();
             return ResponseEntity.status(200).body(id);
         }
         throw new LoginInvalido();

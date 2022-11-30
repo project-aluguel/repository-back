@@ -338,6 +338,10 @@ public class ItemController {
                 entregaFrete = String.valueOf(item.getEntregaFrete()),
                 arquivoFormatado = "";
 
+        arquivoFormatado += "01";
+        arquivoFormatado += "PRODUTO";
+        arquivoFormatado += LocalDateTime.now() + " ".repeat(5);
+        arquivoFormatado += "1.0";
         arquivoFormatado += idProprietario;
         arquivoFormatado += nomeProprietario + " ".repeat(30 - nomeProprietario.length());
         arquivoFormatado += cpf + " ".repeat(20 - cpf.length());
@@ -349,13 +353,21 @@ public class ItemController {
         arquivoFormatado += dataFim + " ".repeat(12 - dataFim.length());
         arquivoFormatado += entregaPessoal + " ".repeat(5 - entregaPessoal.length());
         arquivoFormatado += entregaFrete + " ".repeat(5 - entregaFrete.length());
-
-
+        
         byte[] arquivoTxt = arquivoFormatado.getBytes(StandardCharsets.UTF_8);
 
         return ResponseEntity
                 .status(200)
                 .header("content-disposition", "attachment; filename=\"item.txt\"")
                 .body(arquivoTxt);
+    }
+
+    public void limpaSessaoUsuario() {
+        while (pilhaItem.getTopo() != -1) {
+            pilhaItem.pop();
+        }
+        while (fila.getTamanho() != 0) {
+            fila.poll();
+        }
     }
 }

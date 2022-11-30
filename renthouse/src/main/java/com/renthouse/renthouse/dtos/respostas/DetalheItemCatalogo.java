@@ -19,9 +19,9 @@ public class DetalheItemCatalogo {
 
     private String manualUso;
 
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate dataInicio;
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate dataFim;
 
     private Double valorGarantia;
